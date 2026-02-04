@@ -1,0 +1,53 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+out/
+publish/
+artifacts/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio / Rider
+.vs/
+.vscode/
+.idea/
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.assets.json
+
+# Logs and diagnostics
+*.log
+*.tmp
+*.temp
+*.pid
+*.dmp
+TestResults/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Coverage
+coverage/
+coverage.*
+*.coverage
+*.coveragexml
+
+# Local runtime/generated app data
+CryptoStorage/
+Downloads/
+
+# Keep local assistant/session notes out of git
+LOCAL_AGENT_NOTES.md
