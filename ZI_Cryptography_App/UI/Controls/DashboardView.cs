@@ -35,6 +35,14 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			if (!File.Exists(filePath)) return;
 			if (filePath == _lastProcessedFile && (DateTime.Now - _lastProcessTime).TotalSeconds < 2) return;
 
+			if (GetSelectedAutoAlgorithm() == CryptoAlgorithmType.Playfair &&
+				!filePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+			{
+				AppendDashboardLog($"Skipped (Playfair supports only .txt): {Path.GetFileName(filePath)}");
+				ActivityLogService.Add("FSW", $"Skipped non-txt file for Playfair: {Path.GetFileName(filePath)}", LogSeverity.Warning);
+				return;
+			}
+
 			_lastProcessedFile = filePath;
 			_lastProcessTime = DateTime.Now;
 
@@ -49,8 +57,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			{
 				await Task.Delay(500);
 				var derivation = CryptoInteropSettings.Get();
+				CryptoAlgorithmType algorithm = GetSelectedAutoAlgorithm();
 				string outputPath = await Task.Run(() =>
-					_cryptoService.EncryptFile(filePath, null, _currentSessionPassword, CryptoAlgorithmType.RC6_PCBC, derivation));
+					_cryptoService.EncryptFile(filePath, null, _currentSessionPassword, algorithm, derivation));
 
 				AppendDashboardLog($"Encrypted: {Path.GetFileName(outputPath)}");
 				ActivityLogService.Add("FSW", $"Encrypted {Path.GetFileName(filePath)}", LogSeverity.Success);
@@ -85,11 +94,12 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 					txtAutoPassword.Enabled = false;
 					_fileWatcher.StartWatching(SelectedPath);
 
+					string algoLabel = GetSelectedAutoAlgorithm() == CryptoAlgorithmType.Playfair ? "Playfair" : "RC6-PCBC";
 					lblStatus.Text = "ACTIVE";
 					lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
 					btnToggleFSW.Text = "Stop Monitoring";
-					AppendDashboardLog($"Watcher started on: {SelectedPath}");
-					ActivityLogService.Add("FSW", $"Watcher started on {SelectedPath}", LogSeverity.Info);
+					AppendDashboardLog($"Watcher started on: {SelectedPath} (Algorithm: {algoLabel})");
+					ActivityLogService.Add("FSW", $"Watcher started on {SelectedPath} (Algorithm: {algoLabel})", LogSeverity.Info);
 				}
 				else
 				{
@@ -132,6 +142,11 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			}
 
 			lstDashboardLogs.Items.Insert(0, $"[{DateTime.Now:HH:mm:ss}] {message}");
+		}
+
+		private CryptoAlgorithmType GetSelectedAutoAlgorithm()
+		{
+			return rbAutoPlayfair.Checked ? CryptoAlgorithmType.Playfair : CryptoAlgorithmType.RC6_PCBC;
 		}
 	}
 }

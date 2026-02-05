@@ -36,7 +36,10 @@ Services created:
 - `ZI_Cryptography_App/Services/Networking/FileReceiver.cs`
 
 ### Sender flow (`FileSender`)
-1. User selects an already encrypted `.locked` file.
+1. User selects a file to send.
+2. If the file is not `.locked`, the app encrypts it first using the selected algorithm:
+   - `RC6 + PCBC`
+   - `Playfair (txt only)`
 2. Connect to receiver IP/Port.
 3. Send:
    - file name length (`Int32`)

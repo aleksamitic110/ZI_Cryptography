@@ -20,6 +20,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblTitle = new Label();
 			panelCard = new Panel();
 			btnToggleFSW = new Button();
+			rbAutoPlayfair = new RadioButton();
+			rbAutoRc6 = new RadioButton();
+			lblAlgorithm = new Label();
 			lblStatus = new Label();
 			lblStatusTitle = new Label();
 			txtAutoPassword = new TextBox();
@@ -47,6 +50,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// 
 			panelCard.BackColor = Color.FromArgb(15, 23, 42);
 			panelCard.Controls.Add(btnToggleFSW);
+			panelCard.Controls.Add(rbAutoPlayfair);
+			panelCard.Controls.Add(rbAutoRc6);
+			panelCard.Controls.Add(lblAlgorithm);
 			panelCard.Controls.Add(lblStatus);
 			panelCard.Controls.Add(lblStatusTitle);
 			panelCard.Controls.Add(txtAutoPassword);
@@ -57,7 +63,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			panelCard.Location = new Point(24, 74);
 			panelCard.Name = "panelCard";
 			panelCard.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-			panelCard.Size = new Size(788, 176);
+			panelCard.Size = new Size(788, 206);
 			panelCard.TabIndex = 1;
 			// 
 			// btnToggleFSW
@@ -67,13 +73,48 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnToggleFSW.FlatStyle = FlatStyle.Flat;
 			btnToggleFSW.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
 			btnToggleFSW.ForeColor = Color.White;
-			btnToggleFSW.Location = new Point(633, 122);
+			btnToggleFSW.Location = new Point(633, 152);
 			btnToggleFSW.Name = "btnToggleFSW";
 			btnToggleFSW.Size = new Size(140, 38);
 			btnToggleFSW.TabIndex = 7;
 			btnToggleFSW.Text = "Start Monitoring";
 			btnToggleFSW.UseVisualStyleBackColor = false;
 			btnToggleFSW.Click += btnToggleFSW_Click;
+			// 
+			// rbAutoPlayfair
+			// 
+			rbAutoPlayfair.AutoSize = true;
+			rbAutoPlayfair.ForeColor = Color.FromArgb(226, 232, 240);
+			rbAutoPlayfair.Location = new Point(266, 116);
+			rbAutoPlayfair.Name = "rbAutoPlayfair";
+			rbAutoPlayfair.Size = new Size(109, 19);
+			rbAutoPlayfair.TabIndex = 10;
+			rbAutoPlayfair.Text = "Playfair (txt only)";
+			rbAutoPlayfair.UseVisualStyleBackColor = true;
+			// 
+			// rbAutoRc6
+			// 
+			rbAutoRc6.AutoSize = true;
+			rbAutoRc6.Checked = true;
+			rbAutoRc6.ForeColor = Color.FromArgb(226, 232, 240);
+			rbAutoRc6.Location = new Point(152, 116);
+			rbAutoRc6.Name = "rbAutoRc6";
+			rbAutoRc6.Size = new Size(86, 19);
+			rbAutoRc6.TabIndex = 9;
+			rbAutoRc6.TabStop = true;
+			rbAutoRc6.Text = "RC6 + PCBC";
+			rbAutoRc6.UseVisualStyleBackColor = true;
+			// 
+			// lblAlgorithm
+			// 
+			lblAlgorithm.AutoSize = true;
+			lblAlgorithm.Font = new Font("Segoe UI", 10F);
+			lblAlgorithm.ForeColor = Color.FromArgb(148, 163, 184);
+			lblAlgorithm.Location = new Point(21, 114);
+			lblAlgorithm.Name = "lblAlgorithm";
+			lblAlgorithm.Size = new Size(73, 19);
+			lblAlgorithm.TabIndex = 8;
+			lblAlgorithm.Text = "Algorithm";
 			// 
 			// lblStatus
 			// 
@@ -102,7 +143,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			txtAutoPassword.BackColor = Color.FromArgb(30, 41, 59);
 			txtAutoPassword.BorderStyle = BorderStyle.FixedSingle;
 			txtAutoPassword.ForeColor = Color.White;
-			txtAutoPassword.Location = new Point(152, 124);
+			txtAutoPassword.Location = new Point(152, 154);
 			txtAutoPassword.Name = "txtAutoPassword";
 			txtAutoPassword.Size = new Size(321, 23);
 			txtAutoPassword.TabIndex = 4;
@@ -113,7 +154,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblPassword.AutoSize = true;
 			lblPassword.Font = new Font("Segoe UI", 10F);
 			lblPassword.ForeColor = Color.FromArgb(148, 163, 184);
-			lblPassword.Location = new Point(21, 126);
+			lblPassword.Location = new Point(21, 156);
 			lblPassword.Name = "lblPassword";
 			lblPassword.Size = new Size(125, 19);
 			lblPassword.TabIndex = 3;
@@ -164,10 +205,10 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lstDashboardLogs.ForeColor = Color.FromArgb(226, 232, 240);
 			lstDashboardLogs.FormattingEnabled = true;
 			lstDashboardLogs.ItemHeight = 15;
-			lstDashboardLogs.Location = new Point(24, 289);
+			lstDashboardLogs.Location = new Point(24, 319);
 			lstDashboardLogs.Name = "lstDashboardLogs";
 			lstDashboardLogs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			lstDashboardLogs.Size = new Size(788, 210);
+			lstDashboardLogs.Size = new Size(788, 195);
 			lstDashboardLogs.TabIndex = 2;
 			// 
 			// lblLogTitle
@@ -175,7 +216,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblLogTitle.AutoSize = true;
 			lblLogTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
 			lblLogTitle.ForeColor = Color.FromArgb(148, 163, 184);
-			lblLogTitle.Location = new Point(24, 261);
+			lblLogTitle.Location = new Point(24, 291);
 			lblLogTitle.Name = "lblLogTitle";
 			lblLogTitle.Size = new Size(136, 21);
 			lblLogTitle.TabIndex = 3;
@@ -204,6 +245,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 		private Label lblTitle;
 		private Panel panelCard;
 		private Button btnToggleFSW;
+		private RadioButton rbAutoPlayfair;
+		private RadioButton rbAutoRc6;
+		private Label lblAlgorithm;
 		private Label lblStatus;
 		private Label lblStatusTitle;
 		private TextBox txtAutoPassword;

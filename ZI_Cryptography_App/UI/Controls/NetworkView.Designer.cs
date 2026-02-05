@@ -22,6 +22,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnSend = new Button();
 			txtSendPassword = new TextBox();
 			lblSendPassword = new Label();
+			rbSendPlayfair = new RadioButton();
+			rbSendRc6 = new RadioButton();
+			lblSendAlgorithm = new Label();
 			txtTargetPort = new TextBox();
 			lblTargetPort = new Label();
 			txtTargetIp = new TextBox();
@@ -57,6 +60,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			groupSender.Controls.Add(btnSend);
 			groupSender.Controls.Add(txtSendPassword);
 			groupSender.Controls.Add(lblSendPassword);
+			groupSender.Controls.Add(rbSendPlayfair);
+			groupSender.Controls.Add(rbSendRc6);
+			groupSender.Controls.Add(lblSendAlgorithm);
 			groupSender.Controls.Add(txtTargetPort);
 			groupSender.Controls.Add(lblTargetPort);
 			groupSender.Controls.Add(txtTargetIp);
@@ -67,14 +73,14 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			groupSender.Location = new Point(18, 57);
 			groupSender.Name = "groupSender";
 			groupSender.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-			groupSender.Size = new Size(692, 158);
+			groupSender.Size = new Size(692, 188);
 			groupSender.TabIndex = 1;
 			groupSender.TabStop = false;
 			groupSender.Text = "Sender";
 			// 
 			// btnSend
 			// 
-			btnSend.Location = new Point(576, 116);
+			btnSend.Location = new Point(576, 146);
 			btnSend.Name = "btnSend";
 			btnSend.Size = new Size(95, 29);
 			btnSend.TabIndex = 9;
@@ -84,7 +90,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// 
 			// txtSendPassword
 			// 
-			txtSendPassword.Location = new Point(111, 119);
+			txtSendPassword.Location = new Point(111, 149);
 			txtSendPassword.Name = "txtSendPassword";
 			txtSendPassword.PlaceholderText = "Required if input is not .locked";
 			txtSendPassword.Size = new Size(459, 23);
@@ -94,11 +100,42 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// lblSendPassword
 			// 
 			lblSendPassword.AutoSize = true;
-			lblSendPassword.Location = new Point(12, 123);
+			lblSendPassword.Location = new Point(12, 153);
 			lblSendPassword.Name = "lblSendPassword";
 			lblSendPassword.Size = new Size(60, 15);
 			lblSendPassword.TabIndex = 7;
 			lblSendPassword.Text = "Password:";
+			// 
+			// rbSendPlayfair
+			// 
+			rbSendPlayfair.AutoSize = true;
+			rbSendPlayfair.Location = new Point(233, 111);
+			rbSendPlayfair.Name = "rbSendPlayfair";
+			rbSendPlayfair.Size = new Size(109, 19);
+			rbSendPlayfair.TabIndex = 12;
+			rbSendPlayfair.Text = "Playfair (txt only)";
+			rbSendPlayfair.UseVisualStyleBackColor = true;
+			// 
+			// rbSendRc6
+			// 
+			rbSendRc6.AutoSize = true;
+			rbSendRc6.Checked = true;
+			rbSendRc6.Location = new Point(111, 111);
+			rbSendRc6.Name = "rbSendRc6";
+			rbSendRc6.Size = new Size(86, 19);
+			rbSendRc6.TabIndex = 11;
+			rbSendRc6.TabStop = true;
+			rbSendRc6.Text = "RC6 + PCBC";
+			rbSendRc6.UseVisualStyleBackColor = true;
+			// 
+			// lblSendAlgorithm
+			// 
+			lblSendAlgorithm.AutoSize = true;
+			lblSendAlgorithm.Location = new Point(12, 112);
+			lblSendAlgorithm.Name = "lblSendAlgorithm";
+			lblSendAlgorithm.Size = new Size(66, 15);
+			lblSendAlgorithm.TabIndex = 10;
+			lblSendAlgorithm.Text = "Algorithm:";
 			// 
 			// txtTargetPort
 			// 
@@ -168,7 +205,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			groupReceiver.Controls.Add(lblReceivePassword);
 			groupReceiver.Controls.Add(txtListenPort);
 			groupReceiver.Controls.Add(lblListenPort);
-			groupReceiver.Location = new Point(18, 224);
+			groupReceiver.Location = new Point(18, 254);
 			groupReceiver.Name = "groupReceiver";
 			groupReceiver.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			groupReceiver.Size = new Size(692, 119);
@@ -232,7 +269,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// 
 			lstNetworkLogs.FormattingEnabled = true;
 			lstNetworkLogs.ItemHeight = 15;
-			lstNetworkLogs.Location = new Point(18, 376);
+			lstNetworkLogs.Location = new Point(18, 406);
 			lstNetworkLogs.Name = "lstNetworkLogs";
 			lstNetworkLogs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			lstNetworkLogs.Size = new Size(692, 124);
@@ -241,7 +278,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// lblLogs
 			// 
 			lblLogs.AutoSize = true;
-			lblLogs.Location = new Point(18, 355);
+			lblLogs.Location = new Point(18, 385);
 			lblLogs.Name = "lblLogs";
 			lblLogs.Size = new Size(72, 15);
 			lblLogs.TabIndex = 4;
@@ -282,6 +319,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 		private TextBox txtSendPassword;
 		private Label lblSendPassword;
 		private Button btnSend;
+		private RadioButton rbSendPlayfair;
+		private RadioButton rbSendRc6;
+		private Label lblSendAlgorithm;
 		private GroupBox groupReceiver;
 		private Label lblListenPort;
 		private TextBox txtListenPort;

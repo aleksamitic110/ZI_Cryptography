@@ -282,7 +282,7 @@
 			label2.ForeColor = SystemColors.AppWorkspace;
 			label2.Location = new Point(8, 23);
 			label2.Name = "label2";
-			label2.Size = new Size(208, 32);
+			label2.Size = new Size(205, 32);
 			label2.TabIndex = 3;
 			label2.Text = "ZI_Cryptography";
 			// 
@@ -307,11 +307,11 @@
 			ClientSize = new Size(1100, 700);
 			Controls.Add(panelContent);
 			Controls.Add(panelMenu);
-			FormBorderStyle = FormBorderStyle.Sizable;
 			MinimumSize = new Size(980, 620);
 			Name = "MainForm";
 			StartPosition = FormStartPosition.CenterScreen;
 			Text = "ZI Cryptography";
+			Load += MainForm_Load;
 			panelMenu.ResumeLayout(false);
 			logoPanel.ResumeLayout(false);
 			logoPanel.PerformLayout();

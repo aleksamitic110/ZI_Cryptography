@@ -50,10 +50,12 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 				string encryptedPath = _selectedFilePath;
 				if (!encryptedPath.EndsWith(".locked", StringComparison.OrdinalIgnoreCase))
 				{
-					AppendLog("Encrypting selected file before send...");
+					CryptoAlgorithmType algorithm = GetSelectedSendAlgorithm();
+					string algoLabel = algorithm == CryptoAlgorithmType.Playfair ? "Playfair" : "RC6-PCBC";
+					AppendLog($"Encrypting selected file before send (Algorithm: {algoLabel})...");
 					var derivation = CryptoInteropSettings.Get();
 					encryptedPath = await Task.Run(() =>
-						_cryptoService.EncryptFile(_selectedFilePath, null, txtSendPassword.Text, CryptoAlgorithmType.RC6_PCBC, derivation));
+						_cryptoService.EncryptFile(_selectedFilePath, null, txtSendPassword.Text, algorithm, derivation));
 					AppendLog($"Encrypted file created: {encryptedPath}");
 				}
 
@@ -178,11 +180,20 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 				return false;
 			}
 
-			if (!_selectedFilePath.EndsWith(".locked", StringComparison.OrdinalIgnoreCase) &&
-				string.IsNullOrWhiteSpace(txtSendPassword.Text))
+			if (!_selectedFilePath.EndsWith(".locked", StringComparison.OrdinalIgnoreCase))
 			{
-				MessageBox.Show("Send password is required when sending an unencrypted file.", "Missing Password", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				return false;
+				if (string.IsNullOrWhiteSpace(txtSendPassword.Text))
+				{
+					MessageBox.Show("Send password is required when sending an unencrypted file.", "Missing Password", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return false;
+				}
+
+				if (GetSelectedSendAlgorithm() == CryptoAlgorithmType.Playfair &&
+					!_selectedFilePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+				{
+					MessageBox.Show("Playfair supports only .txt files.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return false;
+				}
 			}
 
 			return true;
@@ -271,6 +282,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblSelectedFile.ForeColor = Color.FromArgb(148, 163, 184);
 			lblTargetIp.ForeColor = Color.FromArgb(148, 163, 184);
 			lblTargetPort.ForeColor = Color.FromArgb(148, 163, 184);
+			lblSendAlgorithm.ForeColor = Color.FromArgb(148, 163, 184);
 			lblSendPassword.ForeColor = Color.FromArgb(148, 163, 184);
 			lblListenPort.ForeColor = Color.FromArgb(148, 163, 184);
 			lblReceivePassword.ForeColor = Color.FromArgb(148, 163, 184);
@@ -282,6 +294,8 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lstNetworkLogs.BackColor = Color.FromArgb(15, 23, 42);
 			lstNetworkLogs.ForeColor = Color.FromArgb(226, 232, 240);
 			lstNetworkLogs.BorderStyle = BorderStyle.None;
+			rbSendRc6.ForeColor = Color.FromArgb(226, 232, 240);
+			rbSendPlayfair.ForeColor = Color.FromArgb(226, 232, 240);
 
 			StyleTextbox(txtSelectedFile, true);
 			StyleTextbox(txtTargetIp);
@@ -293,6 +307,11 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			StyleButton(btnBrowseFile, Color.FromArgb(30, 64, 175));
 			StyleButton(btnSend, Color.FromArgb(14, 116, 144));
 			StyleButton(btnStartStopReceiver, Color.FromArgb(22, 163, 74));
+		}
+
+		private CryptoAlgorithmType GetSelectedSendAlgorithm()
+		{
+			return rbSendPlayfair.Checked ? CryptoAlgorithmType.Playfair : CryptoAlgorithmType.RC6_PCBC;
 		}
 
 		private static void StyleTextbox(TextBox textBox, bool readOnly = false)

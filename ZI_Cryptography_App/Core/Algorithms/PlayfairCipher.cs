@@ -12,14 +12,21 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Core.Algorithms
 		public string Encrypt(string input, string key)
 		{
 			GenerateKeyTable(key);
-			string preparedText = PrepareText(input);
+			string normalized = NormalizePlaintext(input);
+			string preparedText = InsertFillers(normalized);
 			return ProcessText(preparedText, true);
 		}
 
 		public string Decrypt(string input, string key)
 		{
 			GenerateKeyTable(key);
-			return ProcessText(input, false);
+			string decrypted = ProcessText(input, false);
+			return RemoveFillers(decrypted);
+		}
+
+		public string NormalizePlaintext(string input)
+		{
+			return NormalizePlaintextInternal(input);
 		}
 
 		private void GenerateKeyTable(string key)
@@ -60,11 +67,14 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Core.Algorithms
 			}
 		}
 
-		private string PrepareText(string input)
+		private static string NormalizePlaintextInternal(string input)
 		{
 			string text = input.ToUpper().Replace("J", "I");
-			text = new string(text.Where(char.IsLetter).ToArray());
+			return new string(text.Where(char.IsLetter).ToArray());
+		}
 
+		private static string InsertFillers(string text)
+		{
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < text.Length; i++)
 			{
@@ -87,6 +97,39 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Core.Algorithms
 			if (sb.Length % 2 != 0)
 			{
 				sb.Append('X');
+			}
+
+			return sb.ToString();
+		}
+
+		private static string RemoveFillers(string text)
+		{
+			if (string.IsNullOrEmpty(text))
+			{
+				return text;
+			}
+
+			StringBuilder sb = new StringBuilder();
+			int i = 0;
+			while (i < text.Length)
+			{
+				char current = text[i];
+				if (i + 2 < text.Length && text[i + 1] == 'X' && text[i + 2] == current)
+				{
+					sb.Append(current);
+					i += 2;
+				}
+				else
+				{
+					sb.Append(current);
+				}
+
+				i++;
+			}
+
+			if (sb.Length > 0 && sb[^1] == 'X')
+			{
+				sb.Length -= 1;
 			}
 
 			return sb.ToString();

@@ -8,6 +8,7 @@ using ZI_Cryptography.ZI_Cryptography_App.Core.Hashing;
 using ZI_Cryptography.ZI_Cryptography_App.Interfaces;
 using ZI_Cryptography.ZI_Cryptography_App.Models;
 using ZI_Cryptography.ZI_Cryptography_App.Services.FileSystem;
+using ZI_Cryptography.ZI_Cryptography_App.Services.Logging;
 
 namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 {
@@ -63,8 +64,24 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 			};
 
 			byte[] hashBytes;
-			using (var inputHashStream = File.OpenRead(inputFilePath))
+			string? playfairNormalized = null;
+			if (algoType == CryptoAlgorithmType.Playfair)
 			{
+				string extension = Path.GetExtension(inputFilePath).ToLowerInvariant();
+				if (extension != ".txt")
+				{
+					throw new InvalidOperationException("Playfair supports only .txt files.");
+				}
+
+				string plainText = File.ReadAllText(inputFilePath, Encoding.UTF8);
+				var playfair = new PlayfairCipher();
+				playfairNormalized = playfair.NormalizePlaintext(plainText);
+				byte[] normalizedBytes = Encoding.UTF8.GetBytes(playfairNormalized);
+				hashBytes = _hasher.ComputeHash(normalizedBytes);
+			}
+			else
+			{
+				using var inputHashStream = File.OpenRead(inputFilePath);
 				hashBytes = _hasher.ComputeHash(inputHashStream, IoBufferSize);
 			}
 
@@ -75,7 +92,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 
 			if (algoType == CryptoAlgorithmType.Playfair)
 			{
-				EncryptPlayfair(inputFilePath, output, password);
+				EncryptPlayfairText(playfairNormalized ?? string.Empty, output, password);
 			}
 			else
 			{
@@ -118,11 +135,14 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 
 			using var outputHashStream = File.OpenRead(outputPath);
 			byte[] currentHash = _hasher.ComputeHash(outputHashStream, IoBufferSize);
-			if (metadata.EncryptionAlgorithm == "RC6-PCBC" && !AreEqual(expectedHash, currentHash))
+			if (!AreEqual(expectedHash, currentHash))
 			{
 				File.Delete(outputPath);
+				ActivityLogService.Add("Integrity", $"SHA-1 verification failed for {metadata.OriginalFileName}", LogSeverity.Error);
 				throw new Exception("INTEGRITY CHECK FAILED! File corrupted or wrong password.");
 			}
+
+			ActivityLogService.Add("Integrity", $"SHA-1 verified for {metadata.OriginalFileName}", LogSeverity.Success);
 
 			return outputPath;
 		}
@@ -246,21 +266,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 			output.Write(finalPlainPadded, 0, blockSize - padLen);
 		}
 
-		private void EncryptPlayfair(string inputPath, Stream output, string password)
+		private void EncryptPlayfairText(string plainText, Stream output, string password)
 		{
-			string extension = Path.GetExtension(inputPath).ToLowerInvariant();
-			if (extension != ".txt")
-			{
-				throw new InvalidOperationException("Playfair supports only .txt files.");
-			}
-
 			var playfair = new PlayfairCipher();
-			string plainText;
-			using (var reader = new StreamReader(inputPath, Encoding.UTF8, true, IoBufferSize))
-			{
-				plainText = reader.ReadToEnd();
-			}
-
 			string cipher = playfair.Encrypt(plainText, password);
 			byte[] cipherBytes = Encoding.UTF8.GetBytes(cipher);
 			output.Write(cipherBytes, 0, cipherBytes.Length);
@@ -276,7 +284,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 
 			var playfair = new PlayfairCipher();
 			string plainText = playfair.Decrypt(cipherText, password);
-			using var writer = new StreamWriter(outputPath, false, Encoding.UTF8, IoBufferSize);
+			using var writer = new StreamWriter(outputPath, false, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false), IoBufferSize);
 			writer.Write(plainText);
 		}
 

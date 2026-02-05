@@ -15,8 +15,9 @@ Key rule: core cryptographic logic is custom implementation, not `System.Securit
 
 ### Automatic pipeline (Dashboard + FileWatcherService)
 1. User starts watcher on a selected folder with a session password.
+2. User selects encryption algorithm (`RC6 + PCBC` or `Playfair (txt only)`).
 2. `FileWatcherService` emits `FileDetected`.
-3. `DashboardView` calls `EncryptionService.EncryptFile(...)`.
+3. `DashboardView` calls `EncryptionService.EncryptFile(...)` with selected algorithm.
 4. Encrypted file is stored in `CryptoStorage` as `<name>.locked`.
 
 ### Manual pipeline (ManualEncryptionView)
@@ -25,7 +26,8 @@ Key rule: core cryptographic logic is custom implementation, not `System.Securit
 3. View dispatches encryption/decryption in background via `Task.Run`.
 
 ### Network pipeline
-1. Sender encrypts file first.
+1. Sender encrypts file first (if the selected file is not already `.locked`).
+2. Sender chooses algorithm (`RC6 + PCBC` or `Playfair (txt only)`).
 2. `FileSender` streams encrypted file over TCP.
 3. `FileReceiver` saves into `Downloads/Encrypted`, then immediately decrypts to `Downloads/Decrypted`.
 4. Integrity verification is performed automatically after decryption.
@@ -90,6 +92,7 @@ This makes the pipeline scalable for large media files.
 - Before encryption: SHA-1 is computed for original plaintext and written into encrypted file format.
 - After decryption: SHA-1 of decrypted output is recomputed.
 - If mismatch: decryption output is rejected and deleted (`INTEGRITY CHECK FAILED`).
+- Integrity is enforced for both RC6+PCBC and Playfair outputs.
 
 ## 7) File Watcher Logic
 

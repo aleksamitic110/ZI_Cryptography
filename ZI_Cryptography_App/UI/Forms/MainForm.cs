@@ -109,5 +109,11 @@ namespace ZI_Cryptography
 			SetActiveNav(btnSettings);
 			ActivityLogService.Add("App", "Opened Settings view", LogSeverity.Info);
 		}
+
+		private void MainForm_Load(object sender, EventArgs e)
+		{
+
+
+		}
 	}
 }
