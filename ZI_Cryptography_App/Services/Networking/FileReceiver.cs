@@ -2,10 +2,12 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using ZI_Cryptography.ZI_Cryptography_App.Core.Hashing;
 using ZI_Cryptography.ZI_Cryptography_App.Interfaces;
+using ZI_Cryptography.ZI_Cryptography_App.Models;
 
 namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 {
@@ -18,6 +20,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 
 	public class FileReceiver
 	{
+		private const int MaxHeaderSize = 1024 * 1024;
 		private const int BufferSize = 8192;
 		private readonly ICryptoService _encryptionService;
 		private readonly string _downloadsEncryptedDir;
@@ -76,17 +79,22 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 				{
 					await using NetworkStream stream = client.GetStream();
 
-					int fileNameLen = BitConverter.ToInt32(await ReadExactAsync(stream, sizeof(int), cancellationToken), 0);
-					string fileName = Encoding.UTF8.GetString(await ReadExactAsync(stream, fileNameLen, cancellationToken));
-					long fileSize = BitConverter.ToInt64(await ReadExactAsync(stream, sizeof(long), cancellationToken), 0);
+					FileMetadata header = await ReadHeaderAsync(stream, cancellationToken);
 
-					string safeName = Path.GetFileName(fileName);
+					string safeName = Path.GetFileName(header.OriginalFileName);
 					string encryptedPath = Path.Combine(_downloadsEncryptedDir, safeName);
 					encryptedPath = GetUniquePath(encryptedPath);
 
 					await using (var fileStream = new FileStream(encryptedPath, FileMode.Create, FileAccess.Write, FileShare.None, BufferSize, useAsync: true))
 					{
-						await CopyExactAsync(stream, fileStream, fileSize, cancellationToken);
+						await CopyExactAsync(stream, fileStream, header.FileSize, cancellationToken);
+					}
+
+					string receivedHash = ComputeFileHashHex(encryptedPath);
+					if (!string.Equals(receivedHash, header.Hash, StringComparison.OrdinalIgnoreCase))
+					{
+						File.Delete(encryptedPath);
+						throw new InvalidDataException("Received file hash does not match header hash.");
 					}
 
 					string decryptedPath = _encryptionService.DecryptFile(encryptedPath, _downloadsDecryptedDir, _decryptionPassword, _derivationOptions);
@@ -94,7 +102,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 					{
 						EncryptedPath = encryptedPath,
 						DecryptedPath = decryptedPath,
-						Message = "File received, integrity verified, and decrypted."
+						Message = "File received, network hash verified, and decrypted."
 					});
 				}
 				catch (Exception ex)
@@ -102,6 +110,49 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 					ReceiveFailed?.Invoke(this, ex.Message);
 				}
 			}
+		}
+
+		private static async Task<FileMetadata> ReadHeaderAsync(Stream stream, CancellationToken cancellationToken)
+		{
+			int headerLength = BitConverter.ToInt32(await ReadExactAsync(stream, sizeof(int), cancellationToken), 0);
+			if (headerLength <= 0 || headerLength > MaxHeaderSize)
+			{
+				throw new InvalidDataException("Invalid network header length.");
+			}
+
+			byte[] headerBytes = await ReadExactAsync(stream, headerLength, cancellationToken);
+
+			FileMetadata? header;
+			try
+			{
+				header = JsonSerializer.Deserialize<FileMetadata>(headerBytes);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidDataException("Corrupted network header.", ex);
+			}
+
+			if (header == null)
+			{
+				throw new InvalidDataException("Missing network header.");
+			}
+
+			if (string.IsNullOrWhiteSpace(header.OriginalFileName))
+			{
+				throw new InvalidDataException("Network header is missing file name.");
+			}
+
+			if (header.FileSize < 0)
+			{
+				throw new InvalidDataException("Network header contains invalid file size.");
+			}
+
+			if (string.IsNullOrWhiteSpace(header.Hash))
+			{
+				throw new InvalidDataException("Network header is missing file hash.");
+			}
+
+			return header;
 		}
 
 		private static async Task<byte[]> ReadExactAsync(Stream stream, int count, CancellationToken cancellationToken)
@@ -145,6 +196,14 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 				if (!File.Exists(candidate)) return candidate;
 				index++;
 			}
+		}
+
+		private static string ComputeFileHashHex(string filePath)
+		{
+			var hasher = new Sha1Hasher();
+			using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize);
+			byte[] hashBytes = hasher.ComputeHash(stream, BufferSize);
+			return Convert.ToHexString(hashBytes);
 		}
 	}
 }

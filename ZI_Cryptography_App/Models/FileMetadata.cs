@@ -7,6 +7,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Models
 		public DateTime CreationTime { get; set; }
 		public string EncryptionAlgorithm { get; set; } = string.Empty;
 		public string HashAlgorithm { get; set; } = string.Empty;
+		public string Hash { get; set; } = string.Empty;
 
 		public string ToJson()
 		{

@@ -1,14 +1,17 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using ZI_Cryptography.ZI_Cryptography_App.Core.Hashing;
+using ZI_Cryptography.ZI_Cryptography_App.Models;
 
 namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 {
 	public class FileSender
 	{
+		private const int MaxHeaderSize = 1024 * 1024;
 		private const int BufferSize = 8192;
 
 		public async Task SendEncryptedFileAsync(string encryptedFilePath, string receiverIp, int receiverPort, CancellationToken cancellationToken = default)
@@ -23,13 +26,26 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 			await using NetworkStream networkStream = tcpClient.GetStream();
 
 			FileInfo fileInfo = new FileInfo(encryptedFilePath);
-			byte[] fileNameBytes = Encoding.UTF8.GetBytes(fileInfo.Name);
-			byte[] fileNameLenBytes = BitConverter.GetBytes(fileNameBytes.Length);
-			byte[] fileSizeBytes = BitConverter.GetBytes(fileInfo.Length);
+			var header = new FileMetadata
+			{
+				OriginalFileName = fileInfo.Name,
+				FileSize = fileInfo.Length,
+				CreationTime = fileInfo.CreationTimeUtc,
+				EncryptionAlgorithm = "NETWORK-TRANSFER",
+				HashAlgorithm = "SHA-1",
+				Hash = ComputeFileHashHex(encryptedFilePath)
+			};
 
-			await networkStream.WriteAsync(fileNameLenBytes, cancellationToken);
-			await networkStream.WriteAsync(fileNameBytes, cancellationToken);
-			await networkStream.WriteAsync(fileSizeBytes, cancellationToken);
+			byte[] headerBytes = JsonSerializer.SerializeToUtf8Bytes(header);
+			if (headerBytes.Length <= 0 || headerBytes.Length > MaxHeaderSize)
+			{
+				throw new InvalidDataException("Network header size is out of allowed bounds.");
+			}
+
+			byte[] headerLengthBytes = BitConverter.GetBytes(headerBytes.Length);
+
+			await networkStream.WriteAsync(headerLengthBytes, cancellationToken);
+			await networkStream.WriteAsync(headerBytes, cancellationToken);
 
 			byte[] buffer = new byte[BufferSize];
 			await using var input = new FileStream(encryptedFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize, useAsync: true);
@@ -41,6 +57,14 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 			}
 
 			await networkStream.FlushAsync(cancellationToken);
+		}
+
+		private static string ComputeFileHashHex(string filePath)
+		{
+			var hasher = new Sha1Hasher();
+			using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize);
+			byte[] hashBytes = hasher.ComputeHash(stream, BufferSize);
+			return Convert.ToHexString(hashBytes);
 		}
 	}
 }
