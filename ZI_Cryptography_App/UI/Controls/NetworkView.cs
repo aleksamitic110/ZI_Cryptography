@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -142,6 +142,18 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 				txtSelectedFile.Text = _selectedFilePath;
 				ActivityLogService.Add("Network", $"Selected file {Path.GetFileName(_selectedFilePath)}", LogSeverity.Info);
 			}
+		}
+
+		private void btnToggleSendPasswordVisibility_Click(object? sender, EventArgs e)
+		{
+			txtSendPassword.UseSystemPasswordChar = !txtSendPassword.UseSystemPasswordChar;
+			btnToggleSendPasswordVisibility.Text = txtSendPassword.UseSystemPasswordChar ? "\uD83D\uDD12" : "\uD83D\uDD13";
+		}
+
+		private void btnToggleReceivePasswordVisibility_Click(object? sender, EventArgs e)
+		{
+			txtReceivePassword.UseSystemPasswordChar = !txtReceivePassword.UseSystemPasswordChar;
+			btnToggleReceivePasswordVisibility.Text = txtReceivePassword.UseSystemPasswordChar ? "\uD83D\uDD12" : "\uD83D\uDD13";
 		}
 
 		private void FileReceiver_FileReceivedAndVerified(object? sender, FileReceivedEventArgs e)
@@ -304,3 +316,4 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 
 	}
 }
+

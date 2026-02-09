@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -131,6 +131,12 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			}
 		}
 
+		private void btnTogglePasswordVisibility_Click(object? sender, EventArgs e)
+		{
+			txtAutoPassword.UseSystemPasswordChar = !txtAutoPassword.UseSystemPasswordChar;
+			btnTogglePasswordVisibility.Text = txtAutoPassword.UseSystemPasswordChar ? "\uD83D\uDD12" : "\uD83D\uDD13";
+		}
+
 		private void AppendDashboardLog(string message)
 		{
 			if (IsDisposed || !IsHandleCreated) return;
@@ -163,3 +169,4 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 		}
 	}
 }
+

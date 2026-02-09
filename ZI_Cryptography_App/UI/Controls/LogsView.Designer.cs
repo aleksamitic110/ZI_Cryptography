@@ -28,50 +28,50 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// lblTitle
 			// 
 			lblTitle.AutoSize = true;
-			lblTitle.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
-			lblTitle.ForeColor = Color.FromArgb(241, 245, 249);
+			lblTitle.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold);
+			lblTitle.ForeColor = Color.FromArgb(33, 37, 41);
 			lblTitle.Location = new Point(24, 18);
 			lblTitle.Name = "lblTitle";
-			lblTitle.Size = new Size(165, 41);
+			lblTitle.Size = new Size(151, 37);
 			lblTitle.TabIndex = 0;
 			lblTitle.Text = "Audit Logs";
 			// 
 			// lblSubtitle
 			// 
 			lblSubtitle.AutoSize = true;
-			lblSubtitle.Font = new Font("Segoe UI", 10F);
-			lblSubtitle.ForeColor = Color.FromArgb(148, 163, 184);
+			lblSubtitle.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			lblSubtitle.ForeColor = Color.FromArgb(96, 110, 126);
 			lblSubtitle.Location = new Point(27, 62);
 			lblSubtitle.Name = "lblSubtitle";
-			lblSubtitle.Size = new Size(309, 19);
+			lblSubtitle.Size = new Size(275, 17);
 			lblSubtitle.TabIndex = 1;
 			lblSubtitle.Text = "All file watcher, manual crypto and network events";
 			// 
 			// lstActivity
 			// 
-			lstActivity.BackColor = Color.FromArgb(15, 23, 42);
-			lstActivity.BorderStyle = BorderStyle.None;
-			lstActivity.Font = new Font("Consolas", 10F);
-			lstActivity.ForeColor = Color.FromArgb(226, 232, 240);
+			lstActivity.BackColor = Color.White;
+			lstActivity.BorderStyle = BorderStyle.FixedSingle;
+			lstActivity.Font = new Font("Consolas", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			lstActivity.ForeColor = Color.FromArgb(33, 37, 41);
 			lstActivity.FormattingEnabled = true;
 			lstActivity.ItemHeight = 15;
 			lstActivity.Location = new Point(24, 110);
 			lstActivity.Name = "lstActivity";
 			lstActivity.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			lstActivity.Size = new Size(788, 375);
+			lstActivity.Size = new Size(788, 423);
 			lstActivity.TabIndex = 2;
 			// 
 			// btnClearLogs
 			// 
-			btnClearLogs.BackColor = Color.FromArgb(127, 29, 29);
+			btnClearLogs.BackColor = Color.FromArgb(187, 54, 54);
 			btnClearLogs.FlatAppearance.BorderSize = 0;
 			btnClearLogs.FlatStyle = FlatStyle.Flat;
-			btnClearLogs.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+			btnClearLogs.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
 			btnClearLogs.ForeColor = Color.White;
 			btnClearLogs.Location = new Point(692, 18);
 			btnClearLogs.Name = "btnClearLogs";
 			btnClearLogs.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			btnClearLogs.Size = new Size(120, 38);
+			btnClearLogs.Size = new Size(120, 34);
 			btnClearLogs.TabIndex = 3;
 			btnClearLogs.Text = "Clear Logs";
 			btnClearLogs.UseVisualStyleBackColor = false;
@@ -79,15 +79,15 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// 
 			// btnCopyLogs
 			// 
-			btnCopyLogs.BackColor = Color.FromArgb(30, 64, 175);
+			btnCopyLogs.BackColor = Color.FromArgb(42, 98, 186);
 			btnCopyLogs.FlatAppearance.BorderSize = 0;
 			btnCopyLogs.FlatStyle = FlatStyle.Flat;
-			btnCopyLogs.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+			btnCopyLogs.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
 			btnCopyLogs.ForeColor = Color.White;
 			btnCopyLogs.Location = new Point(566, 18);
 			btnCopyLogs.Name = "btnCopyLogs";
 			btnCopyLogs.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			btnCopyLogs.Size = new Size(120, 38);
+			btnCopyLogs.Size = new Size(120, 34);
 			btnCopyLogs.TabIndex = 4;
 			btnCopyLogs.Text = "Copy";
 			btnCopyLogs.UseVisualStyleBackColor = false;
@@ -96,12 +96,12 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// lblCount
 			// 
 			lblCount.AutoSize = true;
-			lblCount.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-			lblCount.ForeColor = Color.FromArgb(125, 211, 252);
-			lblCount.Location = new Point(24, 493);
+			lblCount.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+			lblCount.ForeColor = Color.FromArgb(96, 110, 126);
+			lblCount.Location = new Point(24, 544);
 			lblCount.Name = "lblCount";
 			lblCount.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-			lblCount.Size = new Size(100, 19);
+			lblCount.Size = new Size(97, 17);
 			lblCount.TabIndex = 5;
 			lblCount.Text = "Total Entries: 0";
 			// 
@@ -110,7 +110,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			AutoScroll = true;
-			BackColor = Color.FromArgb(2, 6, 23);
+			BackColor = Color.FromArgb(247, 249, 252);
 			Controls.Add(lblCount);
 			Controls.Add(btnCopyLogs);
 			Controls.Add(btnClearLogs);
@@ -118,7 +118,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			Controls.Add(lblSubtitle);
 			Controls.Add(lblTitle);
 			Name = "LogsView";
-			Size = new Size(840, 524);
+			Size = new Size(840, 580);
 			ResumeLayout(false);
 			PerformLayout();
 		}
