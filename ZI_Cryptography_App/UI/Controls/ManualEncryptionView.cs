@@ -22,7 +22,6 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			_cryptoService = cryptoService;
 			InitializeComponent();
 			LoadOutputFoldersFromSettings();
-			RefreshPathHint();
 		}
 
 		private void DropZone_DragEnter(object? sender, DragEventArgs e)
@@ -70,8 +69,6 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 
 		private async Task RunCryptoAsync(bool encrypt)
 		{
-			RefreshPathHint();
-
 			if (string.IsNullOrWhiteSpace(_selectedFilePath) || !File.Exists(_selectedFilePath))
 			{
 				MessageBox.Show("Please select a valid file first.", "Missing File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -149,19 +146,6 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			return CryptoAlgorithmType.RC6_PCBC;
 		}
 
-		private void RefreshPathHint()
-		{
-			var pathOptions = OutputPathSettings.Get();
-			string encryptFolder = string.IsNullOrWhiteSpace(_encryptOutputTextBox.Text)
-				? pathOptions.EncryptedFilesFolder
-				: _encryptOutputTextBox.Text.Trim();
-			string decryptFolder = string.IsNullOrWhiteSpace(_decryptOutputTextBox.Text)
-				? pathOptions.DecryptedFilesFolder
-				: _decryptOutputTextBox.Text.Trim();
-
-			_pathHint.Text = $"Encrypt -> {encryptFolder} | Decrypt -> {decryptFolder}";
-		}
-
 		private void AppendLog(string message)
 		{
 			_logTextBox.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}{Environment.NewLine}");
@@ -176,13 +160,11 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 		private void BrowseEncryptOutputButton_Click(object? sender, EventArgs e)
 		{
 			BrowseFolder(_encryptOutputTextBox);
-			RefreshPathHint();
 		}
 
 		private void BrowseDecryptOutputButton_Click(object? sender, EventArgs e)
 		{
 			BrowseFolder(_decryptOutputTextBox);
-			RefreshPathHint();
 		}
 
 		private static void BrowseFolder(TextBox target)
@@ -218,15 +200,6 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			string fullPath = Path.GetFullPath(folder);
 			Directory.CreateDirectory(fullPath);
 			return fullPath;
-		}
-
-		protected override void OnVisibleChanged(EventArgs e)
-		{
-			base.OnVisibleChanged(e);
-			if (Visible)
-			{
-				RefreshPathHint();
-			}
 		}
 	}
 }

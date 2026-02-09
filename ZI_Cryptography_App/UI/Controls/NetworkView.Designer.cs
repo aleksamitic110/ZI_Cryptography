@@ -58,7 +58,7 @@
 			lblTitle.Name = "lblTitle";
 			lblTitle.Size = new Size(194, 37);
 			lblTitle.TabIndex = 0;
-			lblTitle.Text = "TCP Networking";
+			lblTitle.Text = "\uD83C\uDF10 TCP Networking";
 			// 
 			// groupSender
 			// 
@@ -87,7 +87,7 @@
 			groupSender.Size = new Size(788, 212);
 			groupSender.TabIndex = 1;
 			groupSender.TabStop = false;
-			groupSender.Text = "Sender";
+			groupSender.Text = "\uD83D\uDCE4 Sender";
 			// 
 			// btnSend
 			// 
@@ -101,7 +101,7 @@
 			btnSend.Name = "btnSend";
 			btnSend.Size = new Size(120, 32);
 			btnSend.TabIndex = 9;
-			btnSend.Text = "Send";
+			btnSend.Text = "\uD83D\uDCE4 Send";
 			btnSend.UseVisualStyleBackColor = false;
 			btnSend.Click += btnSend_Click;
 			// 
@@ -144,7 +144,7 @@
 			lblSendPassword.Name = "lblSendPassword";
 			lblSendPassword.Size = new Size(60, 15);
 			lblSendPassword.TabIndex = 7;
-			lblSendPassword.Text = "Password:";
+			lblSendPassword.Text = "\uD83D\uDD11 Password:";
 			// 
 			// rbSendPlayfair
 			// 
@@ -205,7 +205,7 @@
 			lblSendAlgorithm.Name = "lblSendAlgorithm";
 			lblSendAlgorithm.Size = new Size(64, 15);
 			lblSendAlgorithm.TabIndex = 10;
-			lblSendAlgorithm.Text = "Algorithm:";
+			lblSendAlgorithm.Text = "\u2699 Algorithm:";
 			// 
 			// txtTargetPort
 			// 
@@ -267,7 +267,7 @@
 			btnBrowseFile.Name = "btnBrowseFile";
 			btnBrowseFile.Size = new Size(120, 32);
 			btnBrowseFile.TabIndex = 2;
-			btnBrowseFile.Text = "Browse";
+			btnBrowseFile.Text = "\uD83D\uDCC2 Browse";
 			btnBrowseFile.UseVisualStyleBackColor = false;
 			btnBrowseFile.Click += btnBrowseFile_Click;
 			// 
@@ -293,7 +293,7 @@
 			lblSelectedFile.Name = "lblSelectedFile";
 			lblSelectedFile.Size = new Size(73, 15);
 			lblSelectedFile.TabIndex = 0;
-			lblSelectedFile.Text = "Selected file:";
+			lblSelectedFile.Text = "\uD83D\uDCC4 Selected file:";
 			// 
 			// groupReceiver
 			// 
@@ -313,7 +313,7 @@
 			groupReceiver.Size = new Size(788, 142);
 			groupReceiver.TabIndex = 2;
 			groupReceiver.TabStop = false;
-			groupReceiver.Text = "Receiver";
+			groupReceiver.Text = "\uD83D\uDCE5 Receiver";
 			// 
 			// lblLocalIps
 			// 
@@ -426,7 +426,7 @@
 			lblLogs.Name = "lblLogs";
 			lblLogs.Size = new Size(87, 19);
 			lblLogs.TabIndex = 4;
-			lblLogs.Text = "Network log";
+			lblLogs.Text = "\uD83D\uDCDD Network log";
 			// 
 			// NetworkView
 			// 

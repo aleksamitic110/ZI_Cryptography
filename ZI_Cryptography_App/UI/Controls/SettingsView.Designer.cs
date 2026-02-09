@@ -59,7 +59,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblTitle.Name = "lblTitle";
 			lblTitle.Size = new Size(91, 37);
 			lblTitle.TabIndex = 0;
-			lblTitle.Text = "Settings";
+			lblTitle.Text = "\u2699 Settings";
 			// 
 			// lblSubtitle
 			// 
@@ -101,7 +101,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblInteropTitle.Name = "lblInteropTitle";
 			lblInteropTitle.Size = new Size(228, 19);
 			lblInteropTitle.TabIndex = 0;
-			lblInteropTitle.Text = "Password Derivation / Interoperability";
+			lblInteropTitle.Text = "\uD83D\uDD11 Password Derivation / Interoperability";
 			// 
 			// chkAuto
 			// 
@@ -146,7 +146,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblHex.Name = "lblHex";
 			lblHex.Size = new Size(103, 15);
 			lblHex.TabIndex = 4;
-			lblHex.Text = "Manual bytes hex:";
+			lblHex.Text = "\u2328 Manual bytes hex:";
 			// 
 			// txtHex
 			// 
@@ -229,7 +229,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblStorageTitle.Name = "lblStorageTitle";
 			lblStorageTitle.Size = new Size(88, 19);
 			lblStorageTitle.TabIndex = 0;
-			lblStorageTitle.Text = "Storage Paths";
+			lblStorageTitle.Text = "\uD83D\uDCC1 Storage Paths";
 			// 
 			// lblEncryptedFolder
 			// 
@@ -264,7 +264,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnBrowseEncrypted.Name = "btnBrowseEncrypted";
 			btnBrowseEncrypted.Size = new Size(98, 25);
 			btnBrowseEncrypted.TabIndex = 3;
-			btnBrowseEncrypted.Text = "Browse...";
+			btnBrowseEncrypted.Text = "\uD83D\uDCC2 Browse";
 			btnBrowseEncrypted.UseVisualStyleBackColor = false;
 			btnBrowseEncrypted.Click += btnBrowseEncrypted_Click;
 			// 
@@ -301,7 +301,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnBrowseDecrypted.Name = "btnBrowseDecrypted";
 			btnBrowseDecrypted.Size = new Size(98, 25);
 			btnBrowseDecrypted.TabIndex = 6;
-			btnBrowseDecrypted.Text = "Browse...";
+			btnBrowseDecrypted.Text = "\uD83D\uDCC2 Browse";
 			btnBrowseDecrypted.UseVisualStyleBackColor = false;
 			btnBrowseDecrypted.Click += btnBrowseDecrypted_Click;
 			// 
@@ -338,7 +338,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnBrowseLogs.Name = "btnBrowseLogs";
 			btnBrowseLogs.Size = new Size(98, 25);
 			btnBrowseLogs.TabIndex = 9;
-			btnBrowseLogs.Text = "Browse...";
+			btnBrowseLogs.Text = "\uD83D\uDCC2 Browse";
 			btnBrowseLogs.UseVisualStyleBackColor = false;
 			btnBrowseLogs.Click += btnBrowseLogs_Click;
 			// 
@@ -365,7 +365,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnSave.Name = "btnSave";
 			btnSave.Size = new Size(140, 36);
 			btnSave.TabIndex = 11;
-			btnSave.Text = "Save Settings";
+			btnSave.Text = "\uD83D\uDCBE Save Settings";
 			btnSave.UseVisualStyleBackColor = false;
 			btnSave.Click += btnSave_Click;
 			// 
@@ -381,7 +381,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnReset.Name = "btnReset";
 			btnReset.Size = new Size(140, 36);
 			btnReset.TabIndex = 12;
-			btnReset.Text = "Reset Defaults";
+			btnReset.Text = "\u21BA Reset Defaults";
 			btnReset.UseVisualStyleBackColor = false;
 			btnReset.Click += btnReset_Click;
 			// 

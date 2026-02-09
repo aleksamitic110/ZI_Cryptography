@@ -68,11 +68,11 @@
 			btnSettings.CheckedForeColor = Color.FromArgb(33, 37, 41);
 			btnSettings.CheckedImageTint = Color.FromArgb(33, 37, 41);
 			btnSettings.CheckedOutline = Color.FromArgb(142, 168, 198);
-			btnSettings.Content = "Settings";
+			btnSettings.Content = "\u2699 Settings";
 			btnSettings.Cursor = Cursors.Hand;
 			btnSettings.DialogResult = DialogResult.None;
 			btnSettings.Dock = DockStyle.Top;
-			btnSettings.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			btnSettings.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			btnSettings.ForeColor = Color.FromArgb(33, 37, 41);
 			btnSettings.HoverBackground = Color.FromArgb(234, 239, 245);
 			btnSettings.HoverForeColor = Color.FromArgb(33, 37, 41);
@@ -99,7 +99,7 @@
 			btnSettings.Size = new Size(184, 44);
 			btnSettings.TabIndex = 5;
 			btnSettings.TextAlignment = StringAlignment.Near;
-			btnSettings.TextOffset = new Point(6, 0);
+			btnSettings.TextOffset = new Point(8, 0);
 			btnSettings.Click += btnSettings_Click;
 			// 
 			// btnLogs
@@ -110,10 +110,10 @@
 			btnLogs.CheckedForeColor = Color.FromArgb(33, 37, 41);
 			btnLogs.CheckedImageTint = Color.FromArgb(33, 37, 41);
 			btnLogs.CheckedOutline = Color.FromArgb(142, 168, 198);
-			btnLogs.Content = "Logs";
+			btnLogs.Content = "\u2630 Logs";
 			btnLogs.DialogResult = DialogResult.None;
 			btnLogs.Dock = DockStyle.Top;
-			btnLogs.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			btnLogs.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			btnLogs.ForeColor = Color.FromArgb(33, 37, 41);
 			btnLogs.HoverBackground = Color.FromArgb(234, 239, 245);
 			btnLogs.HoverForeColor = Color.FromArgb(33, 37, 41);
@@ -140,7 +140,7 @@
 			btnLogs.Size = new Size(184, 44);
 			btnLogs.TabIndex = 4;
 			btnLogs.TextAlignment = StringAlignment.Near;
-			btnLogs.TextOffset = new Point(6, 0);
+			btnLogs.TextOffset = new Point(8, 0);
 			btnLogs.Click += btnLogs_Click;
 			// 
 			// btnNetwork
@@ -151,10 +151,10 @@
 			btnNetwork.CheckedForeColor = Color.FromArgb(33, 37, 41);
 			btnNetwork.CheckedImageTint = Color.FromArgb(33, 37, 41);
 			btnNetwork.CheckedOutline = Color.FromArgb(142, 168, 198);
-			btnNetwork.Content = "Network";
+			btnNetwork.Content = "\u21C4 Network";
 			btnNetwork.DialogResult = DialogResult.None;
 			btnNetwork.Dock = DockStyle.Top;
-			btnNetwork.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			btnNetwork.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			btnNetwork.ForeColor = Color.FromArgb(33, 37, 41);
 			btnNetwork.HoverBackground = Color.FromArgb(234, 239, 245);
 			btnNetwork.HoverForeColor = Color.FromArgb(33, 37, 41);
@@ -181,7 +181,7 @@
 			btnNetwork.Size = new Size(184, 44);
 			btnNetwork.TabIndex = 3;
 			btnNetwork.TextAlignment = StringAlignment.Near;
-			btnNetwork.TextOffset = new Point(6, 0);
+			btnNetwork.TextOffset = new Point(8, 0);
 			btnNetwork.Click += btnNetwork_Click;
 			// 
 			// btnEncryption
@@ -192,10 +192,10 @@
 			btnEncryption.CheckedForeColor = Color.FromArgb(33, 37, 41);
 			btnEncryption.CheckedImageTint = Color.FromArgb(33, 37, 41);
 			btnEncryption.CheckedOutline = Color.FromArgb(142, 168, 198);
-			btnEncryption.Content = "Manual Crypto";
+			btnEncryption.Content = "\u25C6 Manual Crypto";
 			btnEncryption.DialogResult = DialogResult.None;
 			btnEncryption.Dock = DockStyle.Top;
-			btnEncryption.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			btnEncryption.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			btnEncryption.ForeColor = Color.FromArgb(33, 37, 41);
 			btnEncryption.HoverBackground = Color.FromArgb(234, 239, 245);
 			btnEncryption.HoverForeColor = Color.FromArgb(33, 37, 41);
@@ -222,7 +222,7 @@
 			btnEncryption.Size = new Size(184, 44);
 			btnEncryption.TabIndex = 2;
 			btnEncryption.TextAlignment = StringAlignment.Near;
-			btnEncryption.TextOffset = new Point(6, 0);
+			btnEncryption.TextOffset = new Point(8, 0);
 			btnEncryption.Click += btnEncryption_Click;
 			// 
 			// btnDashboard
@@ -233,10 +233,10 @@
 			btnDashboard.CheckedForeColor = Color.FromArgb(33, 37, 41);
 			btnDashboard.CheckedImageTint = Color.FromArgb(33, 37, 41);
 			btnDashboard.CheckedOutline = Color.FromArgb(142, 168, 198);
-			btnDashboard.Content = "Dashboard";
+			btnDashboard.Content = "\u25A3 Dashboard";
 			btnDashboard.DialogResult = DialogResult.None;
 			btnDashboard.Dock = DockStyle.Top;
-			btnDashboard.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			btnDashboard.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			btnDashboard.ForeColor = Color.FromArgb(33, 37, 41);
 			btnDashboard.HoverBackground = Color.FromArgb(234, 239, 245);
 			btnDashboard.HoverForeColor = Color.FromArgb(33, 37, 41);
@@ -263,7 +263,7 @@
 			btnDashboard.Size = new Size(184, 44);
 			btnDashboard.TabIndex = 1;
 			btnDashboard.TextAlignment = StringAlignment.Near;
-			btnDashboard.TextOffset = new Point(6, 0);
+			btnDashboard.TextOffset = new Point(8, 0);
 			btnDashboard.Click += btnDashboard_Click;
 			// 
 			// logoPanel
@@ -285,7 +285,7 @@
 			label2.Name = "label2";
 			label2.Size = new Size(139, 23);
 			label2.TabIndex = 3;
-			label2.Text = "ZI Cryptography";
+			label2.Text = "\u25CF ZI Cryptography";
 			// 
 			// panelContent
 			// 

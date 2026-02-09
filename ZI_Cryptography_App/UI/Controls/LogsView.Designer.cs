@@ -34,7 +34,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblTitle.Name = "lblTitle";
 			lblTitle.Size = new Size(151, 37);
 			lblTitle.TabIndex = 0;
-			lblTitle.Text = "Audit Logs";
+			lblTitle.Text = "\uD83D\uDCDD Audit Logs";
 			// 
 			// lblSubtitle
 			// 
@@ -73,7 +73,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnClearLogs.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 			btnClearLogs.Size = new Size(120, 34);
 			btnClearLogs.TabIndex = 3;
-			btnClearLogs.Text = "Clear Logs";
+			btnClearLogs.Text = "\uD83D\uDDD1 Clear Logs";
 			btnClearLogs.UseVisualStyleBackColor = false;
 			btnClearLogs.Click += btnClearLogs_Click;
 			// 
@@ -89,7 +89,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			btnCopyLogs.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 			btnCopyLogs.Size = new Size(120, 34);
 			btnCopyLogs.TabIndex = 4;
-			btnCopyLogs.Text = "Copy";
+			btnCopyLogs.Text = "\uD83D\uDCCB Copy";
 			btnCopyLogs.UseVisualStyleBackColor = false;
 			btnCopyLogs.Click += btnCopyLogs_Click;
 			// 

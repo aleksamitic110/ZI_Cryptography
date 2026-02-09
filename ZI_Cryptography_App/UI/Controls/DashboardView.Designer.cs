@@ -47,7 +47,7 @@
 			lblTitle.Name = "lblTitle";
 			lblTitle.Size = new Size(347, 37);
 			lblTitle.TabIndex = 0;
-			lblTitle.Text = "File Watcher & Auto Encrypt";
+			lblTitle.Text = "\uD83D\uDD0D File Watcher & Auto Encrypt";
 			// 
 			// panelCard
 			// 
@@ -144,7 +144,7 @@
 			lblAlgorithm.Name = "lblAlgorithm";
 			lblAlgorithm.Size = new Size(70, 19);
 			lblAlgorithm.TabIndex = 8;
-			lblAlgorithm.Text = "Algorithm";
+			lblAlgorithm.Text = "\u2699 Algorithm";
 			// 
 			// lblStatus
 			// 
@@ -205,7 +205,7 @@
 			lblPassword.Name = "lblPassword";
 			lblPassword.Size = new Size(127, 19);
 			lblPassword.TabIndex = 3;
-			lblPassword.Text = "Auto Key Password";
+			lblPassword.Text = "\uD83D\uDD11 Auto Key Password";
 			// 
 			// btnSelectFolder
 			// 
@@ -220,7 +220,7 @@
 			btnSelectFolder.Name = "btnSelectFolder";
 			btnSelectFolder.Size = new Size(140, 38);
 			btnSelectFolder.TabIndex = 2;
-			btnSelectFolder.Text = "Select Folder";
+			btnSelectFolder.Text = "\uD83D\uDCC1 Select Folder";
 			btnSelectFolder.UseVisualStyleBackColor = false;
 			btnSelectFolder.Click += btnSelectFolder_Click;
 			// 
@@ -245,7 +245,7 @@
 			lblFolder.Name = "lblFolder";
 			lblFolder.Size = new Size(106, 19);
 			lblFolder.TabIndex = 0;
-			lblFolder.Text = "Monitored Path";
+			lblFolder.Text = "\uD83D\uDCC2 Monitored Path";
 			// 
 			// lstDashboardLogs
 			// 
@@ -269,7 +269,7 @@
 			lblLogTitle.Name = "lblLogTitle";
 			lblLogTitle.Size = new Size(104, 20);
 			lblLogTitle.TabIndex = 3;
-			lblLogTitle.Text = "Activity Feed";
+			lblLogTitle.Text = "\uD83D\uDCCA Activity Feed";
 			// 
 			// DashboardView
 			// 

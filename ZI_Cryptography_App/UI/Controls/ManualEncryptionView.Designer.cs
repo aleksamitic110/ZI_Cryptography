@@ -49,7 +49,7 @@
 			_title.Name = "_title";
 			_title.Size = new Size(306, 37);
 			_title.TabIndex = 0;
-			_title.Text = "Manual Encrypt / Decrypt";
+			_title.Text = "\uD83D\uDD10 Manual Encrypt / Decrypt";
 			// 
 			// _subtitle
 			// 
@@ -69,6 +69,7 @@
 			_dropZone.BackColor = Color.White;
 			_dropZone.BorderStyle = BorderStyle.FixedSingle;
 			_dropZone.Controls.Add(_dropZoneText);
+			_dropZone.Cursor = Cursors.Hand;
 			_dropZone.Location = new Point(24, 92);
 			_dropZone.Name = "_dropZone";
 			_dropZone.Size = new Size(780, 96);
@@ -80,14 +81,16 @@
 			// _dropZoneText
 			// 
 			_dropZoneText.Dock = DockStyle.Fill;
+			_dropZoneText.Cursor = Cursors.Hand;
 			_dropZoneText.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			_dropZoneText.ForeColor = Color.FromArgb(96, 110, 126);
 			_dropZoneText.Location = new Point(0, 0);
 			_dropZoneText.Name = "_dropZoneText";
 			_dropZoneText.Size = new Size(778, 94);
 			_dropZoneText.TabIndex = 0;
-			_dropZoneText.Text = "Drag and drop a file here, or click to browse.";
+			_dropZoneText.Text = "\uD83D\uDCC2 Drag and drop a file here, or click to browse.";
 			_dropZoneText.TextAlign = ContentAlignment.MiddleCenter;
+			_dropZoneText.Click += DropZone_Click;
 			// 
 			// _passwordTextBox
 			// 
@@ -127,7 +130,7 @@
 			_encryptOutputLabel.Name = "_encryptOutputLabel";
 			_encryptOutputLabel.Size = new Size(86, 15);
 			_encryptOutputLabel.TabIndex = 5;
-			_encryptOutputLabel.Text = "Encrypt output";
+			_encryptOutputLabel.Text = "\uD83D\uDCC1 Encrypt output";
 			// 
 			// _encryptOutputTextBox
 			// 
@@ -152,7 +155,7 @@
 			_browseEncryptOutputButton.Name = "_browseEncryptOutputButton";
 			_browseEncryptOutputButton.Size = new Size(98, 29);
 			_browseEncryptOutputButton.TabIndex = 7;
-			_browseEncryptOutputButton.Text = "Browse...";
+			_browseEncryptOutputButton.Text = "\uD83D\uDCC2 Browse";
 			_browseEncryptOutputButton.UseVisualStyleBackColor = false;
 			_browseEncryptOutputButton.Click += BrowseEncryptOutputButton_Click;
 			// 
@@ -165,7 +168,7 @@
 			_decryptOutputLabel.Name = "_decryptOutputLabel";
 			_decryptOutputLabel.Size = new Size(89, 15);
 			_decryptOutputLabel.TabIndex = 8;
-			_decryptOutputLabel.Text = "Decrypt output";
+			_decryptOutputLabel.Text = "\uD83D\uDCC1 Decrypt output";
 			// 
 			// _decryptOutputTextBox
 			// 
@@ -190,7 +193,7 @@
 			_browseDecryptOutputButton.Name = "_browseDecryptOutputButton";
 			_browseDecryptOutputButton.Size = new Size(98, 29);
 			_browseDecryptOutputButton.TabIndex = 10;
-			_browseDecryptOutputButton.Text = "Browse...";
+			_browseDecryptOutputButton.Text = "\uD83D\uDCC2 Browse";
 			_browseDecryptOutputButton.UseVisualStyleBackColor = false;
 			_browseDecryptOutputButton.Click += BrowseDecryptOutputButton_Click;
 			// 
@@ -251,7 +254,7 @@
 			_encryptButton.Name = "_encryptButton";
 			_encryptButton.Size = new Size(130, 38);
 			_encryptButton.TabIndex = 15;
-			_encryptButton.Text = "Encrypt";
+			_encryptButton.Text = "\uD83D\uDD12 Encrypt";
 			_encryptButton.UseVisualStyleBackColor = false;
 			_encryptButton.Click += EncryptButton_Click;
 			// 
@@ -266,7 +269,7 @@
 			_decryptButton.Name = "_decryptButton";
 			_decryptButton.Size = new Size(130, 38);
 			_decryptButton.TabIndex = 16;
-			_decryptButton.Text = "Decrypt";
+			_decryptButton.Text = "\uD83D\uDD13 Decrypt";
 			_decryptButton.UseVisualStyleBackColor = false;
 			_decryptButton.Click += DecryptButton_Click;
 			// 
@@ -279,7 +282,7 @@
 			_pathHint.Name = "_pathHint";
 			_pathHint.Size = new Size(780, 32);
 			_pathHint.TabIndex = 17;
-			_pathHint.Text = "Active output folders";
+			_pathHint.Text = "\uD83D\uDCDD Logs (encryption/decryption details and errors):";
 			// 
 			// _logTextBox
 			// 
