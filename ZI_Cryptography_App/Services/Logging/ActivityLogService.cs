@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography;
 
 namespace ZI_Cryptography.ZI_Cryptography_App.Services.Logging
 {
@@ -24,6 +27,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Logging
 	public static class ActivityLogService
 	{
 		private static readonly object Sync = new();
+		private static readonly object FileSync = new();
 		private static readonly List<ActivityLogEntry> Entries = new();
 		private const int MaxEntries = 2000;
 
@@ -56,6 +60,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Logging
 				}
 			}
 
+			WriteEntryToDisk(entry);
 			LogAdded?.Invoke(entry);
 		}
 
@@ -64,6 +69,26 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Logging
 			lock (Sync)
 			{
 				Entries.Clear();
+			}
+		}
+
+		private static void WriteEntryToDisk(ActivityLogEntry entry)
+		{
+			try
+			{
+				string logsFolder = OutputPathSettings.Get().ActivityLogsFolder;
+				Directory.CreateDirectory(logsFolder);
+				string filePath = Path.Combine(logsFolder, $"activity-{DateTime.Now:yyyy-MM-dd}.log");
+				string line = $"[{entry.Timestamp:yyyy-MM-dd HH:mm:ss}] [{entry.Severity}] [{entry.Source}] {entry.Message}{Environment.NewLine}";
+
+				lock (FileSync)
+				{
+					File.AppendAllText(filePath, line, Encoding.UTF8);
+				}
+			}
+			catch
+			{
+				// Logging must never fail the app flow.
 			}
 		}
 	}

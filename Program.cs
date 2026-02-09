@@ -11,6 +11,7 @@ namespace ZI_Cryptography
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            ZI_Cryptography.ZI_Cryptography_App.UI.Helpers.GlobalExceptionHandler.Register();
             Application.Run(new MainForm());
         }
     }

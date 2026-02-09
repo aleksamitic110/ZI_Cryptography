@@ -21,6 +21,8 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			panelCard = new Panel();
 			btnToggleFSW = new Button();
 			rbAutoPlayfair = new RadioButton();
+			rbAutoPcbcOnly = new RadioButton();
+			rbAutoRc6Only = new RadioButton();
 			rbAutoRc6 = new RadioButton();
 			lblAlgorithm = new Label();
 			lblStatus = new Label();
@@ -42,15 +44,18 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblTitle.ForeColor = Color.FromArgb(241, 245, 249);
 			lblTitle.Location = new Point(24, 18);
 			lblTitle.Name = "lblTitle";
-			lblTitle.Size = new Size(393, 41);
+			lblTitle.Size = new Size(381, 41);
 			lblTitle.TabIndex = 0;
 			lblTitle.Text = "File Watcher & Auto Encrypt";
 			// 
 			// panelCard
 			// 
+			panelCard.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			panelCard.BackColor = Color.FromArgb(15, 23, 42);
 			panelCard.Controls.Add(btnToggleFSW);
 			panelCard.Controls.Add(rbAutoPlayfair);
+			panelCard.Controls.Add(rbAutoPcbcOnly);
+			panelCard.Controls.Add(rbAutoRc6Only);
 			panelCard.Controls.Add(rbAutoRc6);
 			panelCard.Controls.Add(lblAlgorithm);
 			panelCard.Controls.Add(lblStatus);
@@ -62,7 +67,6 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			panelCard.Controls.Add(lblFolder);
 			panelCard.Location = new Point(24, 74);
 			panelCard.Name = "panelCard";
-			panelCard.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			panelCard.Size = new Size(788, 206);
 			panelCard.TabIndex = 1;
 			// 
@@ -85,12 +89,34 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			// 
 			rbAutoPlayfair.AutoSize = true;
 			rbAutoPlayfair.ForeColor = Color.FromArgb(226, 232, 240);
-			rbAutoPlayfair.Location = new Point(266, 116);
+			rbAutoPlayfair.Location = new Point(473, 116);
 			rbAutoPlayfair.Name = "rbAutoPlayfair";
-			rbAutoPlayfair.Size = new Size(109, 19);
-			rbAutoPlayfair.TabIndex = 10;
+			rbAutoPlayfair.Size = new Size(115, 19);
+			rbAutoPlayfair.TabIndex = 12;
 			rbAutoPlayfair.Text = "Playfair (txt only)";
 			rbAutoPlayfair.UseVisualStyleBackColor = true;
+			// 
+			// rbAutoPcbcOnly
+			// 
+			rbAutoPcbcOnly.AutoSize = true;
+			rbAutoPcbcOnly.ForeColor = Color.FromArgb(226, 232, 240);
+			rbAutoPcbcOnly.Location = new Point(365, 116);
+			rbAutoPcbcOnly.Name = "rbAutoPcbcOnly";
+			rbAutoPcbcOnly.Size = new Size(81, 19);
+			rbAutoPcbcOnly.TabIndex = 11;
+			rbAutoPcbcOnly.Text = "PCBC only";
+			rbAutoPcbcOnly.UseVisualStyleBackColor = true;
+			// 
+			// rbAutoRc6Only
+			// 
+			rbAutoRc6Only.AutoSize = true;
+			rbAutoRc6Only.ForeColor = Color.FromArgb(226, 232, 240);
+			rbAutoRc6Only.Location = new Point(267, 116);
+			rbAutoRc6Only.Name = "rbAutoRc6Only";
+			rbAutoRc6Only.Size = new Size(72, 19);
+			rbAutoRc6Only.TabIndex = 10;
+			rbAutoRc6Only.Text = "RC6 only";
+			rbAutoRc6Only.UseVisualStyleBackColor = true;
 			// 
 			// rbAutoRc6
 			// 
@@ -99,7 +125,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			rbAutoRc6.ForeColor = Color.FromArgb(226, 232, 240);
 			rbAutoRc6.Location = new Point(152, 116);
 			rbAutoRc6.Name = "rbAutoRc6";
-			rbAutoRc6.Size = new Size(86, 19);
+			rbAutoRc6.Size = new Size(90, 19);
 			rbAutoRc6.TabIndex = 9;
 			rbAutoRc6.TabStop = true;
 			rbAutoRc6.Text = "RC6 + PCBC";
@@ -112,29 +138,29 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblAlgorithm.ForeColor = Color.FromArgb(148, 163, 184);
 			lblAlgorithm.Location = new Point(21, 114);
 			lblAlgorithm.Name = "lblAlgorithm";
-			lblAlgorithm.Size = new Size(73, 19);
+			lblAlgorithm.Size = new Size(70, 19);
 			lblAlgorithm.TabIndex = 8;
 			lblAlgorithm.Text = "Algorithm";
 			// 
 			// lblStatus
 			// 
 			lblStatus.AutoSize = true;
-			lblStatus.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+			lblStatus.Font = new Font("Segoe UI", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 			lblStatus.ForeColor = Color.FromArgb(239, 68, 68);
-			lblStatus.Location = new Point(622, 30);
+			lblStatus.Location = new Point(406, 15);
 			lblStatus.Name = "lblStatus";
-			lblStatus.Size = new Size(77, 20);
+			lblStatus.Size = new Size(135, 37);
 			lblStatus.TabIndex = 6;
 			lblStatus.Text = "STOPPED";
 			// 
 			// lblStatusTitle
 			// 
 			lblStatusTitle.AutoSize = true;
-			lblStatusTitle.Font = new Font("Segoe UI", 10F);
+			lblStatusTitle.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblStatusTitle.ForeColor = Color.FromArgb(148, 163, 184);
-			lblStatusTitle.Location = new Point(484, 31);
+			lblStatusTitle.Location = new Point(174, 15);
 			lblStatusTitle.Name = "lblStatusTitle";
-			lblStatusTitle.Size = new Size(128, 19);
+			lblStatusTitle.Size = new Size(235, 37);
 			lblStatusTitle.TabIndex = 5;
 			lblStatusTitle.Text = "Monitoring Status:";
 			// 
@@ -145,7 +171,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			txtAutoPassword.ForeColor = Color.White;
 			txtAutoPassword.Location = new Point(152, 154);
 			txtAutoPassword.Name = "txtAutoPassword";
-			txtAutoPassword.Size = new Size(321, 23);
+			txtAutoPassword.Size = new Size(460, 23);
 			txtAutoPassword.TabIndex = 4;
 			txtAutoPassword.UseSystemPasswordChar = true;
 			// 
@@ -156,7 +182,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblPassword.ForeColor = Color.FromArgb(148, 163, 184);
 			lblPassword.Location = new Point(21, 156);
 			lblPassword.Name = "lblPassword";
-			lblPassword.Size = new Size(125, 19);
+			lblPassword.Size = new Size(127, 19);
 			lblPassword.TabIndex = 3;
 			lblPassword.Text = "Auto Key Password";
 			// 
@@ -193,21 +219,20 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblFolder.ForeColor = Color.FromArgb(148, 163, 184);
 			lblFolder.Location = new Point(21, 78);
 			lblFolder.Name = "lblFolder";
-			lblFolder.Size = new Size(108, 19);
+			lblFolder.Size = new Size(106, 19);
 			lblFolder.TabIndex = 0;
 			lblFolder.Text = "Monitored Path";
 			// 
 			// lstDashboardLogs
 			// 
+			lstDashboardLogs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			lstDashboardLogs.BackColor = Color.FromArgb(15, 23, 42);
 			lstDashboardLogs.BorderStyle = BorderStyle.None;
 			lstDashboardLogs.Font = new Font("Consolas", 10F);
 			lstDashboardLogs.ForeColor = Color.FromArgb(226, 232, 240);
 			lstDashboardLogs.FormattingEnabled = true;
-			lstDashboardLogs.ItemHeight = 15;
 			lstDashboardLogs.Location = new Point(24, 319);
 			lstDashboardLogs.Name = "lstDashboardLogs";
-			lstDashboardLogs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			lstDashboardLogs.Size = new Size(788, 195);
 			lstDashboardLogs.TabIndex = 2;
 			// 
@@ -218,7 +243,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			lblLogTitle.ForeColor = Color.FromArgb(148, 163, 184);
 			lblLogTitle.Location = new Point(24, 291);
 			lblLogTitle.Name = "lblLogTitle";
-			lblLogTitle.Size = new Size(136, 21);
+			lblLogTitle.Size = new Size(133, 21);
 			lblLogTitle.TabIndex = 3;
 			lblLogTitle.Text = "Realtime Activity";
 			// 
@@ -246,6 +271,8 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 		private Panel panelCard;
 		private Button btnToggleFSW;
 		private RadioButton rbAutoPlayfair;
+		private RadioButton rbAutoPcbcOnly;
+		private RadioButton rbAutoRc6Only;
 		private RadioButton rbAutoRc6;
 		private Label lblAlgorithm;
 		private Label lblStatus;

@@ -15,6 +15,8 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 	public enum CryptoAlgorithmType
 	{
 		RC6_PCBC,
+		RC6,
+		PCBC,
 		Playfair
 	}
 
@@ -22,17 +24,18 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 	{
 		private const int IoBufferSize = 8192;
 		private const int HashSize = 20;
+		private const string PlayfairAlgorithmName = "Playfair";
+		private const string Rc6PcbcAlgorithmName = "RC6-PCBC";
+		private const string Rc6AlgorithmName = "RC6";
+		private const string PcbcAlgorithmName = "PCBC";
 
 		private readonly IMetadataManager _metadataManager;
 		private readonly IHasher _hasher;
-		private readonly string _storageDirectory;
 
 		public EncryptionService()
 		{
 			_metadataManager = new MetadataManager();
 			_hasher = new Sha1Hasher();
-			_storageDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CryptoStorage");
-			Directory.CreateDirectory(_storageDirectory);
 		}
 
 		public string EncryptFile(string inputFilePath, string? outputFolder, string password)
@@ -50,7 +53,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 			if (!File.Exists(inputFilePath)) throw new FileNotFoundException("File not found", inputFilePath);
 			if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password cannot be empty.", nameof(password));
 
-			string destinationDir = string.IsNullOrWhiteSpace(outputFolder) ? _storageDirectory : outputFolder;
+			string destinationDir = string.IsNullOrWhiteSpace(outputFolder)
+				? OutputPathSettings.Get().EncryptedFilesFolder
+				: outputFolder;
 			Directory.CreateDirectory(destinationDir);
 			string outputPath = Path.Combine(destinationDir, $"{Path.GetFileName(inputFilePath)}.locked");
 
@@ -59,7 +64,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 				OriginalFileName = Path.GetFileName(inputFilePath),
 				FileSize = new FileInfo(inputFilePath).Length,
 				CreationTime = File.GetCreationTime(inputFilePath),
-				EncryptionAlgorithm = algoType == CryptoAlgorithmType.Playfair ? "Playfair" : "RC6-PCBC",
+				EncryptionAlgorithm = GetMetadataAlgorithmName(algoType),
 				HashAlgorithm = _hasher.Name
 			};
 
@@ -90,15 +95,34 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 			output.Write(headerBytes, 0, headerBytes.Length);
 			output.Write(hashBytes, 0, hashBytes.Length);
 
-			if (algoType == CryptoAlgorithmType.Playfair)
+			switch (algoType)
 			{
-				EncryptPlayfairText(playfairNormalized ?? string.Empty, output, password);
-			}
-			else
-			{
-				byte[] key = DeriveKeyFromPassword(password, derivationOptions);
-				using var input = new FileStream(inputFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, IoBufferSize);
-				EncryptRc6PcbcStream(input, output, key);
+				case CryptoAlgorithmType.Playfair:
+					EncryptPlayfairText(playfairNormalized ?? string.Empty, output, password);
+					break;
+				case CryptoAlgorithmType.RC6_PCBC:
+				{
+					byte[] key = DeriveKeyFromPassword(password, derivationOptions);
+					using var input = new FileStream(inputFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, IoBufferSize);
+					EncryptRc6PcbcStream(input, output, key);
+					break;
+				}
+				case CryptoAlgorithmType.RC6:
+				{
+					byte[] key = DeriveKeyFromPassword(password, derivationOptions);
+					using var input = new FileStream(inputFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, IoBufferSize);
+					EncryptRc6Stream(input, output, key);
+					break;
+				}
+				case CryptoAlgorithmType.PCBC:
+				{
+					byte[] key = DeriveKeyFromPassword(password, derivationOptions);
+					using var input = new FileStream(inputFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, IoBufferSize);
+					EncryptPcbcStream(input, output, key);
+					break;
+				}
+				default:
+					throw new NotSupportedException($"Unsupported encryption algorithm: {algoType}");
 			}
 
 			return outputPath;
@@ -109,7 +133,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 			if (!File.Exists(encryptedFilePath)) throw new FileNotFoundException("File not found", encryptedFilePath);
 			if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password cannot be empty.", nameof(password));
 
-			string destinationDir = string.IsNullOrWhiteSpace(outputFolder) ? _storageDirectory : outputFolder;
+			string destinationDir = string.IsNullOrWhiteSpace(outputFolder)
+				? OutputPathSettings.Get().DecryptedFilesFolder
+				: outputFolder;
 			Directory.CreateDirectory(destinationDir);
 
 			using var input = new FileStream(encryptedFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, IoBufferSize);
@@ -117,20 +143,37 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 
 			byte[] expectedHash = ReadExact(input, HashSize);
 			string outputPath = Path.Combine(destinationDir, $"Decrypted_{metadata.OriginalFileName}");
+			string algorithmName = metadata.EncryptionAlgorithm?.Trim() ?? string.Empty;
 
-			if (metadata.EncryptionAlgorithm == "Playfair")
+			switch (algorithmName)
 			{
-				DecryptPlayfair(input, outputPath, password);
-			}
-			else if (metadata.EncryptionAlgorithm == "RC6-PCBC")
-			{
-				byte[] key = DeriveKeyFromPassword(password, derivationOptions);
-				using var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, IoBufferSize);
-				DecryptRc6PcbcStream(input, output, key);
-			}
-			else
-			{
-				throw new NotSupportedException($"Unknown encryption algorithm: {metadata.EncryptionAlgorithm}");
+				case PlayfairAlgorithmName:
+					DecryptPlayfair(input, outputPath, password);
+					break;
+				case Rc6PcbcAlgorithmName:
+				case "RC6 + PCBC":
+				{
+					byte[] key = DeriveKeyFromPassword(password, derivationOptions);
+					using var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, IoBufferSize);
+					DecryptRc6PcbcStream(input, output, key);
+					break;
+				}
+				case Rc6AlgorithmName:
+				{
+					byte[] key = DeriveKeyFromPassword(password, derivationOptions);
+					using var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, IoBufferSize);
+					DecryptRc6Stream(input, output, key);
+					break;
+				}
+				case PcbcAlgorithmName:
+				{
+					byte[] key = DeriveKeyFromPassword(password, derivationOptions);
+					using var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, IoBufferSize);
+					DecryptPcbcStream(input, output, key);
+					break;
+				}
+				default:
+					throw new NotSupportedException($"Unknown encryption algorithm: {metadata.EncryptionAlgorithm}");
 			}
 
 			using var outputHashStream = File.OpenRead(outputPath);
@@ -266,6 +309,195 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 			output.Write(finalPlainPadded, 0, blockSize - padLen);
 		}
 
+		private void EncryptRc6Stream(Stream input, Stream output, byte[] key)
+		{
+			var rc6 = new RC6Cipher();
+			int blockSize = rc6.BlockSize;
+			byte[] ioBuffer = ArrayPool<byte>.Shared.Rent(IoBufferSize);
+			byte[] pending = ArrayPool<byte>.Shared.Rent(blockSize * 2);
+			int pendingLen = 0;
+
+			try
+			{
+				while (true)
+				{
+					int read = input.Read(ioBuffer, 0, IoBufferSize);
+					if (read <= 0) break;
+
+					EnsurePendingCapacity(ref pending, pendingLen + read);
+					Buffer.BlockCopy(ioBuffer, 0, pending, pendingLen, read);
+					pendingLen += read;
+
+					int processLen = pendingLen - (pendingLen % blockSize);
+					for (int offset = 0; offset < processLen; offset += blockSize)
+					{
+						byte[] plainBlock = new byte[blockSize];
+						Buffer.BlockCopy(pending, offset, plainBlock, 0, blockSize);
+						byte[] cipherBlock = rc6.EncryptBlock(plainBlock, key);
+						output.Write(cipherBlock, 0, cipherBlock.Length);
+					}
+
+					int remaining = pendingLen - processLen;
+					if (remaining > 0)
+					{
+						Buffer.BlockCopy(pending, processLen, pending, 0, remaining);
+					}
+
+					pendingLen = remaining;
+				}
+
+				int padLen = blockSize - (pendingLen % blockSize);
+				if (padLen == 0) padLen = blockSize;
+
+				byte[] lastBlock = new byte[blockSize];
+				if (pendingLen > 0)
+				{
+					Buffer.BlockCopy(pending, 0, lastBlock, 0, pendingLen);
+				}
+
+				for (int i = pendingLen; i < blockSize; i++)
+				{
+					lastBlock[i] = (byte)padLen;
+				}
+
+				byte[] paddedCipher = rc6.EncryptBlock(lastBlock, key);
+				output.Write(paddedCipher, 0, paddedCipher.Length);
+			}
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(ioBuffer);
+				ArrayPool<byte>.Shared.Return(pending);
+			}
+		}
+
+		private void DecryptRc6Stream(Stream input, Stream output, byte[] key)
+		{
+			var rc6 = new RC6Cipher();
+			int blockSize = rc6.BlockSize;
+			long remainingCipherBytes = input.Length - input.Position;
+			if (remainingCipherBytes <= 0 || remainingCipherBytes % blockSize != 0)
+			{
+				throw new Exception("Invalid encrypted payload size.");
+			}
+
+			byte[] currentCipher = ReadExact(input, blockSize);
+			while (input.Position < input.Length)
+			{
+				byte[] nextCipher = ReadExact(input, blockSize);
+				byte[] plain = rc6.DecryptBlock(currentCipher, key);
+				output.Write(plain, 0, plain.Length);
+				currentCipher = nextCipher;
+			}
+
+			byte[] finalPlainPadded = rc6.DecryptBlock(currentCipher, key);
+			int padLen = GetAndValidatePadding(finalPlainPadded, blockSize);
+			output.Write(finalPlainPadded, 0, blockSize - padLen);
+		}
+
+		private void EncryptPcbcStream(Stream input, Stream output, byte[] key)
+		{
+			const int blockSize = 16;
+			byte[] iv = new byte[blockSize];
+			RandomNumberGenerator.Fill(iv);
+			output.Write(iv, 0, iv.Length);
+
+			byte[] prevPlain = (byte[])iv.Clone();
+			byte[] prevCipher = (byte[])iv.Clone();
+			byte[] ioBuffer = ArrayPool<byte>.Shared.Rent(IoBufferSize);
+			byte[] pending = ArrayPool<byte>.Shared.Rent(blockSize * 2);
+			int pendingLen = 0;
+
+			try
+			{
+				while (true)
+				{
+					int read = input.Read(ioBuffer, 0, IoBufferSize);
+					if (read <= 0) break;
+
+					EnsurePendingCapacity(ref pending, pendingLen + read);
+					Buffer.BlockCopy(ioBuffer, 0, pending, pendingLen, read);
+					pendingLen += read;
+
+					int processLen = pendingLen - (pendingLen % blockSize);
+					for (int offset = 0; offset < processLen; offset += blockSize)
+					{
+						byte[] plainBlock = new byte[blockSize];
+						Buffer.BlockCopy(pending, offset, plainBlock, 0, blockSize);
+						byte[] inputBlock = XorBlocks(plainBlock, prevPlain, prevCipher);
+						byte[] cipherBlock = XorWithKey(inputBlock, key);
+						output.Write(cipherBlock, 0, cipherBlock.Length);
+						prevPlain = plainBlock;
+						prevCipher = cipherBlock;
+					}
+
+					int remaining = pendingLen - processLen;
+					if (remaining > 0)
+					{
+						Buffer.BlockCopy(pending, processLen, pending, 0, remaining);
+					}
+
+					pendingLen = remaining;
+				}
+
+				int padLen = blockSize - (pendingLen % blockSize);
+				if (padLen == 0) padLen = blockSize;
+
+				byte[] lastBlock = new byte[blockSize];
+				if (pendingLen > 0)
+				{
+					Buffer.BlockCopy(pending, 0, lastBlock, 0, pendingLen);
+				}
+
+				for (int i = pendingLen; i < blockSize; i++)
+				{
+					lastBlock[i] = (byte)padLen;
+				}
+
+				byte[] paddedInput = XorBlocks(lastBlock, prevPlain, prevCipher);
+				byte[] paddedCipher = XorWithKey(paddedInput, key);
+				output.Write(paddedCipher, 0, paddedCipher.Length);
+			}
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(ioBuffer);
+				ArrayPool<byte>.Shared.Return(pending);
+			}
+		}
+
+		private void DecryptPcbcStream(Stream input, Stream output, byte[] key)
+		{
+			const int blockSize = 16;
+			byte[] iv = ReadExact(input, blockSize);
+			byte[] prevPlain = (byte[])iv.Clone();
+			byte[] prevCipher = (byte[])iv.Clone();
+
+			long remainingCipherBytes = input.Length - input.Position;
+			if (remainingCipherBytes <= 0 || remainingCipherBytes % blockSize != 0)
+			{
+				throw new Exception("Invalid encrypted payload size.");
+			}
+
+			byte[] currentCipher = new byte[blockSize];
+			byte[] nextCipher = new byte[blockSize];
+
+			ReadFully(input, currentCipher, blockSize);
+			while (input.Position < input.Length)
+			{
+				ReadFully(input, nextCipher, blockSize);
+				byte[] decrypted = XorWithKey(currentCipher, key);
+				byte[] plain = XorBlocks(decrypted, prevPlain, prevCipher);
+				output.Write(plain, 0, plain.Length);
+				prevPlain = plain;
+				prevCipher = (byte[])currentCipher.Clone();
+				Buffer.BlockCopy(nextCipher, 0, currentCipher, 0, blockSize);
+			}
+
+			byte[] finalDecrypted = XorWithKey(currentCipher, key);
+			byte[] finalPlainPadded = XorBlocks(finalDecrypted, prevPlain, prevCipher);
+			int padLen = GetAndValidatePadding(finalPlainPadded, blockSize);
+			output.Write(finalPlainPadded, 0, blockSize - padLen);
+		}
+
 		private void EncryptPlayfairText(string plainText, Stream output, string password)
 		{
 			var playfair = new PlayfairCipher();
@@ -337,6 +569,47 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Cryptography
 			for (int i = 0; i < output.Length; i++)
 			{
 				output[i] = Convert.ToByte(value.Substring(i * 2, 2), 16);
+			}
+
+			return output;
+		}
+
+		private static string GetMetadataAlgorithmName(CryptoAlgorithmType algorithm)
+		{
+			return algorithm switch
+			{
+				CryptoAlgorithmType.Playfair => PlayfairAlgorithmName,
+				CryptoAlgorithmType.RC6 => Rc6AlgorithmName,
+				CryptoAlgorithmType.PCBC => PcbcAlgorithmName,
+				_ => Rc6PcbcAlgorithmName
+			};
+		}
+
+		private static int GetAndValidatePadding(byte[] paddedBlock, int blockSize)
+		{
+			int padLen = paddedBlock[^1];
+			if (padLen < 1 || padLen > blockSize)
+			{
+				throw new Exception("Invalid padding or wrong password.");
+			}
+
+			for (int i = 1; i <= padLen; i++)
+			{
+				if (paddedBlock[^i] != padLen)
+				{
+					throw new Exception("Invalid padding or wrong password.");
+				}
+			}
+
+			return padLen;
+		}
+
+		private static byte[] XorWithKey(byte[] input, byte[] key)
+		{
+			byte[] output = new byte[input.Length];
+			for (int i = 0; i < input.Length; i++)
+			{
+				output[i] = (byte)(input[i] ^ key[i % key.Length]);
 			}
 
 			return output;

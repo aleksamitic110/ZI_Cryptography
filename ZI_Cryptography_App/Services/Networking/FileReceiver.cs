@@ -28,18 +28,32 @@ namespace ZI_Cryptography.ZI_Cryptography_App.Services.Networking
 		public event EventHandler<FileReceivedEventArgs>? FileReceivedAndVerified;
 		public event EventHandler<string>? ReceiveFailed;
 
-		public FileReceiver(ICryptoService encryptionService, string decryptionPassword, string baseDownloadsPath = "", Services.Cryptography.PasswordDerivationOptions? derivationOptions = null)
+		public FileReceiver(
+			ICryptoService encryptionService,
+			string decryptionPassword,
+			string baseDownloadsPath = "",
+			Services.Cryptography.PasswordDerivationOptions? derivationOptions = null,
+			string? encryptedOutputFolder = null,
+			string? decryptedOutputFolder = null)
 		{
 			_encryptionService = encryptionService;
 			_decryptionPassword = decryptionPassword;
 			_derivationOptions = derivationOptions?.Clone();
 
-			string root = string.IsNullOrWhiteSpace(baseDownloadsPath)
-				? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Downloads")
-				: baseDownloadsPath;
+			if (!string.IsNullOrWhiteSpace(encryptedOutputFolder) && !string.IsNullOrWhiteSpace(decryptedOutputFolder))
+			{
+				_downloadsEncryptedDir = Path.GetFullPath(encryptedOutputFolder);
+				_downloadsDecryptedDir = Path.GetFullPath(decryptedOutputFolder);
+			}
+			else
+			{
+				string root = string.IsNullOrWhiteSpace(baseDownloadsPath)
+					? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Downloads")
+					: baseDownloadsPath;
 
-			_downloadsEncryptedDir = Path.Combine(root, "Encrypted");
-			_downloadsDecryptedDir = Path.Combine(root, "Decrypted");
+				_downloadsEncryptedDir = Path.Combine(root, "Encrypted");
+				_downloadsDecryptedDir = Path.Combine(root, "Decrypted");
+			}
 
 			Directory.CreateDirectory(_downloadsEncryptedDir);
 			Directory.CreateDirectory(_downloadsDecryptedDir);

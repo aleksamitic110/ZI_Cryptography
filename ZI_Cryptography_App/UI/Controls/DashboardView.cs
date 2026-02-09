@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -93,12 +92,13 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 					_currentSessionPassword = txtAutoPassword.Text;
 					txtAutoPassword.Enabled = false;
 					_fileWatcher.StartWatching(SelectedPath);
+					var pathOptions = OutputPathSettings.Get();
 
-					string algoLabel = GetSelectedAutoAlgorithm() == CryptoAlgorithmType.Playfair ? "Playfair" : "RC6-PCBC";
+					string algoLabel = GetAlgorithmLabel(GetSelectedAutoAlgorithm());
 					lblStatus.Text = "ACTIVE";
-					lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
 					btnToggleFSW.Text = "Stop Monitoring";
 					AppendDashboardLog($"Watcher started on: {SelectedPath} (Algorithm: {algoLabel})");
+					AppendDashboardLog($"Encrypted output folder: {pathOptions.EncryptedFilesFolder}");
 					ActivityLogService.Add("FSW", $"Watcher started on {SelectedPath} (Algorithm: {algoLabel})", LogSeverity.Info);
 				}
 				else
@@ -108,7 +108,6 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 					_currentSessionPassword = string.Empty;
 
 					lblStatus.Text = "STOPPED";
-					lblStatus.ForeColor = Color.FromArgb(239, 68, 68);
 					btnToggleFSW.Text = "Start Monitoring";
 					AppendDashboardLog("Watcher stopped.");
 					ActivityLogService.Add("FSW", "Watcher stopped", LogSeverity.Warning);
@@ -146,7 +145,21 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 
 		private CryptoAlgorithmType GetSelectedAutoAlgorithm()
 		{
-			return rbAutoPlayfair.Checked ? CryptoAlgorithmType.Playfair : CryptoAlgorithmType.RC6_PCBC;
+			if (rbAutoPlayfair.Checked) return CryptoAlgorithmType.Playfair;
+			if (rbAutoPcbcOnly.Checked) return CryptoAlgorithmType.PCBC;
+			if (rbAutoRc6Only.Checked) return CryptoAlgorithmType.RC6;
+			return CryptoAlgorithmType.RC6_PCBC;
+		}
+
+		private static string GetAlgorithmLabel(CryptoAlgorithmType algorithm)
+		{
+			return algorithm switch
+			{
+				CryptoAlgorithmType.Playfair => "Playfair",
+				CryptoAlgorithmType.RC6 => "RC6",
+				CryptoAlgorithmType.PCBC => "PCBC",
+				_ => "RC6 + PCBC"
+			};
 		}
 	}
 }

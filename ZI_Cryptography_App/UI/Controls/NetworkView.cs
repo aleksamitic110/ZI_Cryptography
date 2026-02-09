@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,11 +29,9 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			InitializeComponent();
 			_cryptoService = new EncryptionService();
 			_fileSender = new FileSender();
-			BackColor = Color.FromArgb(2, 6, 23);
 			txtTargetPort.Text = "9000";
 			txtListenPort.Text = "9000";
 			lblLocalIps.Text = $"Local IPv4: {GetLocalIpv4List()}";
-			ApplyTheme();
 		}
 
 		private async void btnSend_Click(object sender, EventArgs e)
@@ -51,7 +48,7 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 				if (!encryptedPath.EndsWith(".locked", StringComparison.OrdinalIgnoreCase))
 				{
 					CryptoAlgorithmType algorithm = GetSelectedSendAlgorithm();
-					string algoLabel = algorithm == CryptoAlgorithmType.Playfair ? "Playfair" : "RC6-PCBC";
+					string algoLabel = GetAlgorithmLabel(algorithm);
 					AppendLog($"Encrypting selected file before send (Algorithm: {algoLabel})...");
 					var derivation = CryptoInteropSettings.Get();
 					encryptedPath = await Task.Run(() =>
@@ -97,16 +94,23 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			}
 
 			_receiverCts = new CancellationTokenSource();
-			_fileReceiver = new FileReceiver(_cryptoService, txtReceivePassword.Text.Trim(), derivationOptions: CryptoInteropSettings.Get());
+			var pathOptions = OutputPathSettings.Get();
+			_fileReceiver = new FileReceiver(
+				_cryptoService,
+				txtReceivePassword.Text.Trim(),
+				derivationOptions: CryptoInteropSettings.Get(),
+				encryptedOutputFolder: pathOptions.EncryptedFilesFolder,
+				decryptedOutputFolder: pathOptions.DecryptedFilesFolder);
 			_fileReceiver.FileReceivedAndVerified += FileReceiver_FileReceivedAndVerified;
 			_fileReceiver.ReceiveFailed += FileReceiver_ReceiveFailed;
 
 			btnStartStopReceiver.Text = "Stop Listening";
-			btnStartStopReceiver.BackColor = Color.FromArgb(180, 83, 9);
 			txtListenPort.Enabled = false;
 			txtReceivePassword.Enabled = false;
 
 			AppendLog($"Receiver started on port {port}.");
+			AppendLog($"Incoming encrypted folder: {pathOptions.EncryptedFilesFolder}");
+			AppendLog($"Incoming decrypted folder: {pathOptions.DecryptedFilesFolder}");
 			ActivityLogService.Add("Network", $"Receiver started on port {port}", LogSeverity.Info);
 			_receiverTask = _fileReceiver.StartAsync(port, _receiverCts.Token);
 
@@ -238,7 +242,6 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			_fileReceiver = null;
 
 			btnStartStopReceiver.Text = "Start Listening";
-			btnStartStopReceiver.BackColor = Color.FromArgb(22, 163, 74);
 			txtListenPort.Enabled = true;
 			txtReceivePassword.Enabled = true;
 		}
@@ -274,60 +277,23 @@ namespace ZI_Cryptography.ZI_Cryptography_App.UI.Controls
 			return ips.Count == 0 ? "Not found" : string.Join(", ", ips);
 		}
 
-		private void ApplyTheme()
-		{
-			lblTitle.ForeColor = Color.FromArgb(241, 245, 249);
-			lblLogs.ForeColor = Color.FromArgb(148, 163, 184);
-			lblLocalIps.ForeColor = Color.FromArgb(125, 211, 252);
-			lblSelectedFile.ForeColor = Color.FromArgb(148, 163, 184);
-			lblTargetIp.ForeColor = Color.FromArgb(148, 163, 184);
-			lblTargetPort.ForeColor = Color.FromArgb(148, 163, 184);
-			lblSendAlgorithm.ForeColor = Color.FromArgb(148, 163, 184);
-			lblSendPassword.ForeColor = Color.FromArgb(148, 163, 184);
-			lblListenPort.ForeColor = Color.FromArgb(148, 163, 184);
-			lblReceivePassword.ForeColor = Color.FromArgb(148, 163, 184);
-
-			groupSender.BackColor = Color.FromArgb(15, 23, 42);
-			groupSender.ForeColor = Color.FromArgb(148, 163, 184);
-			groupReceiver.BackColor = Color.FromArgb(15, 23, 42);
-			groupReceiver.ForeColor = Color.FromArgb(148, 163, 184);
-			lstNetworkLogs.BackColor = Color.FromArgb(15, 23, 42);
-			lstNetworkLogs.ForeColor = Color.FromArgb(226, 232, 240);
-			lstNetworkLogs.BorderStyle = BorderStyle.None;
-			rbSendRc6.ForeColor = Color.FromArgb(226, 232, 240);
-			rbSendPlayfair.ForeColor = Color.FromArgb(226, 232, 240);
-
-			StyleTextbox(txtSelectedFile, true);
-			StyleTextbox(txtTargetIp);
-			StyleTextbox(txtTargetPort);
-			StyleTextbox(txtSendPassword);
-			StyleTextbox(txtListenPort);
-			StyleTextbox(txtReceivePassword);
-
-			StyleButton(btnBrowseFile, Color.FromArgb(30, 64, 175));
-			StyleButton(btnSend, Color.FromArgb(14, 116, 144));
-			StyleButton(btnStartStopReceiver, Color.FromArgb(22, 163, 74));
-		}
-
 		private CryptoAlgorithmType GetSelectedSendAlgorithm()
 		{
-			return rbSendPlayfair.Checked ? CryptoAlgorithmType.Playfair : CryptoAlgorithmType.RC6_PCBC;
+			if (rbSendPlayfair.Checked) return CryptoAlgorithmType.Playfair;
+			if (rbSendPcbcOnly.Checked) return CryptoAlgorithmType.PCBC;
+			if (rbSendRc6Only.Checked) return CryptoAlgorithmType.RC6;
+			return CryptoAlgorithmType.RC6_PCBC;
 		}
 
-		private static void StyleTextbox(TextBox textBox, bool readOnly = false)
+		private static string GetAlgorithmLabel(CryptoAlgorithmType algorithm)
 		{
-			textBox.BackColor = Color.FromArgb(30, 41, 59);
-			textBox.ForeColor = Color.White;
-			textBox.BorderStyle = BorderStyle.FixedSingle;
-			textBox.ReadOnly = readOnly;
-		}
-
-		private static void StyleButton(Button button, Color color)
-		{
-			button.BackColor = color;
-			button.ForeColor = Color.White;
-			button.FlatStyle = FlatStyle.Flat;
-			button.FlatAppearance.BorderSize = 0;
+			return algorithm switch
+			{
+				CryptoAlgorithmType.Playfair => "Playfair",
+				CryptoAlgorithmType.RC6 => "RC6",
+				CryptoAlgorithmType.PCBC => "PCBC",
+				_ => "RC6 + PCBC"
+			};
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
